@@ -1,30 +1,5 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/* Created by Lucas Wu and Mira Chew
+ * Mode which includes chassis, arm, and claw movement
  */
 
 //version 1
@@ -40,13 +15,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Basic: TeleOpMode", group="Iterative Opmode")
-@Disabled
-public class TeleOpMode extends OpMode
+@TeleOp(name="TOpMode_FullBot", group="Iterative Opmode")
+//@Disabled
+public class TOpMode_FullBot
+        extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor arm;
+    private DcMotor gNeck;
     private DcMotor left_drive;
     private DcMotor right_drive;
     private DigitalChannel forwardLimitSwitch;
@@ -62,10 +38,10 @@ public class TeleOpMode extends OpMode
 
         forwardLimitSwitch = hardwareMap.get(DigitalChannel.class, "forwardLimitSwitch");
         reverseLimitSwitch = hardwareMap.get(DigitalChannel.class, "reverseLimitSwitch");
-        arm = hardwareMap.get(DcMotor.class, "arm");
+        gNeck = hardwareMap.get(DcMotor.class, "gNeck");
         left_drive = hardwareMap.get(DcMotor.class, "left_drive");
         right_drive = hardwareMap.get(DcMotor.class, "right_drive");
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        gNeck.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         telemetry.addData("Status", "Running");
         giraffeMouth = hardwareMap.get(Servo.class, "giraffeMouth");
 
@@ -98,6 +74,8 @@ public class TeleOpMode extends OpMode
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         limit();
         simpleTankDrive();
+        giraffeMouthMovement();
+        report();
 
     }
 
@@ -110,14 +88,15 @@ public class TeleOpMode extends OpMode
 
     private void limit(){
         double output;
-        if (!isDetected(forwardLimitSwitch) && this.gamepad1.left_trigger > 0 && this.gamepad1.right_trigger == 0)
+        //Left bumper is for raising
+        //Right bumper is for lowering
+        if (!isDetected(reverseLimitSwitch) && this.gamepad1.left_trigger > 0 && this.gamepad1.right_trigger == 0)
             output = this.gamepad1.left_trigger*giraffeScaler;  //should only move forward if limit switch not pressed and only right trigger is
-        else if(!isDetected(reverseLimitSwitch) && this.gamepad1.right_trigger > 0 && this.gamepad1.left_trigger == 0) // If the reversed limit switch is pressed, we want to keep the values between 0 and 1
+        else if(!isDetected(forwardLimitSwitch) && this.gamepad1.right_trigger > 0 && this.gamepad1.left_trigger == 0) // If the reversed limit switch is pressed, we want to keep the values between 0 and 1
             output = -this.gamepad1.right_trigger*giraffeScaler;    //should only move forward if limit switch not pressed and only left trigger is
         else
             output = 0;
-        arm.setPower(output);
-        report();
+        gNeck.setPower(output);
     }
 
     private void report() {
@@ -132,23 +111,33 @@ public class TeleOpMode extends OpMode
             telemetry.addData("reverseLimitSwitch", "not detected");
 
         }
-        telemetry.update();
+        telemetry.addData("Left Stick Value:", -gamepad1.left_stick_y);
+        telemetry.addData("Right Stick Value:", -gamepad1.right_stick_y);
 
+        telemetry.addData("Left Bumper", gamepad1.left_bumper);
+        telemetry.addData("Right Bumper", gamepad1.right_bumper);
+
+        telemetry.addData("Servo Position:", giraffeMouth.getPosition());
+        telemetry.update();
     }
 
     private void simpleTankDrive(){
-        right_drive.setPower(gamepad1.right_stick_y);
+        right_drive.setPower(-gamepad1.right_stick_y);
         left_drive.setPower(gamepad1.left_stick_y);
+
     }
 
     private void giraffeMouthMovement(){
-        if(gamepad1.right_bumper){
-
+        double servoPos = giraffeMouth.getPosition();
+        if(gamepad1.left_bumper == true){ //to close mouth
+            giraffeMouth.setPosition(servoPos-0.01);
+        } else if(gamepad1.right_bumper == true){ //to open mouth
+            giraffeMouth.setPosition(servoPos+0.01);
         }
 
     }
 
     private boolean isDetected(DigitalChannel limitSwitch) {
         return !limitSwitch.getState();
-    }
+    } // for magnetic limit switches
 }

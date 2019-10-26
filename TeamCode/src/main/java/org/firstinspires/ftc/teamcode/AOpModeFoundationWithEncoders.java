@@ -18,6 +18,7 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
+    private DcMotor gNeck = null;
 
     static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
@@ -35,12 +36,12 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        giraffeNeck = hardwareMap.get(DcMotor.class, "giraffe_neck")
+        gNeck = hardwareMap.get(DcMotor.class, "gNeck");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        giraffeNeck.setDirection(DcMotor.Direction.FORWARD);
+        gNeck.setDirection(DcMotor.Direction.FORWARD);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -51,16 +52,16 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
 
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        giraffeNeck.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        gNeck.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        giraffeNeck.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        gNeck.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",
                 leftDrive.getCurrentPosition(),
                 rightDrive.getCurrentPosition(),
-                giraffeNeck.getCurrentPosition());
+                gNeck.getCurrentPosition());
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -76,7 +77,7 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
-    public void encoderArm(double speed, double heightInches, double)
+    //public void encoderArm(double speed, double heightInches, double){}
 
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
