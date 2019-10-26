@@ -61,7 +61,9 @@ public class VuforiaTest extends OpMode
         telemetry.addData("Status", "Initialized");
         int cameraMonitorId = hardwareMap.appContext.getResources().getIdentifier("cameraViewerID", "ID", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorId);
-
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        parameters.vuforiaLicenseKey ="Ado05xz/////AAABmY8uetMq2krthNRU8hk1XbAPBHbJ/EVJizmHI/8Kz+HV4an+0zONWUZOd9XOiJIebM2WA7z/Wzffa9W87IrMnmb4pKEkY5dYbzjEdsDy28aKcZSkAu7jpO610LnMv+tWDKK3Chj+apf7OinQiaMnm9xSdjIOTxe6kegt5kHTY6inImWrZuHXe6trOfv48elrDyhrTDNELqZwjjG1LFZkGzgyKCQ9wvWcO0JXec+R5iQg+RMc92eqhCMv/6558QRae364puvHtp0OfszOivgelgFk901BvjQzTFzYnh80+tFWbiNNGfc6jzyz09xcWBR9B9xOsIPHcNPgsF9akWHjrEaDCtj/XdsrlqOf93xq31fl";
+        this.vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
     }
 
     /*
