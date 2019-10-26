@@ -18,6 +18,7 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
+    private DcMotor giraffeNeck =  null;
 
     static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
@@ -35,7 +36,7 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        giraffeNeck = hardwareMap.get(DcMotor.class, "giraffe_neck")
+        giraffeNeck = hardwareMap.get(DcMotor.class, "giraffe_neck");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -76,7 +77,34 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
-    public void encoderArm(double speed, double heightInches, double)
+    public void encoderArm(double speed, double degrees, double timeoutS) {
+        int newUpTarget;
+
+        if (opModeIsActive()) {
+            newUpTarget = giraffeNeck.getCurrentPosition() + (int) (degrees * COUNTS_PER_INCH);
+            giraffeNeck.setTargetPosition(newUpTarget);
+            giraffeNeck.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            runtime.reset();
+            giraffeNeck.setPower(Math.abs(speed));
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (leftDrive.isBusy() && rightDrive.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1", "Running to %7d :%7d", newUpTarget);
+                telemetry.addData("Path2", "Running at %7d :%7d",
+                        giraffeNeck.getCurrentPosition());
+                telemetry.update();
+            }
+
+            giraffeNeck.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            giraffeNeck.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        }
+    }
 
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
