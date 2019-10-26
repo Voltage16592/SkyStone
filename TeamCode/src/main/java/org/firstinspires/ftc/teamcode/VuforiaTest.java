@@ -33,17 +33,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @TeleOp(name="Basic: VuforiaTest", group="Iterative Opmode")
@@ -66,6 +59,7 @@ public class VuforiaTest extends OpMode {
         parameters.vuforiaLicenseKey = "Ado05xz/////AAABmY8uetMq2krthNRU8hk1XbAPBHbJ/EVJizmHI/8Kz+HV4an+0zONWUZOd9XOiJIebM2WA7z/Wzffa9W87IrMnmb4pKEkY5dYbzjEdsDy28aKcZSkAu7jpO610LnMv+tWDKK3Chj+apf7OinQiaMnm9xSdjIOTxe6kegt5kHTY6inImWrZuHXe6trOfv48elrDyhrTDNELqZwjjG1LFZkGzgyKCQ9wvWcO0JXec+R5iQg+RMc92eqhCMv/6558QRae364puvHtp0OfszOivgelgFk901BvjQzTFzYnh80+tFWbiNNGfc6jzyz09xcWBR9B9xOsIPHcNPgsF9akWHjrEaDCtj/XdsrlqOf93xq31fl";
         this.vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
         relicTemplate.setName("SkyStoneTemplate");
+
     }
 
     /*
@@ -82,13 +76,14 @@ public class VuforiaTest extends OpMode {
     public void start() {
         runtime.reset();
     }{
+    //for(int i = 0; i < 5; i++){
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN)
+                telemetry.addData("Pick", "is visible", vuMark);
+            {
 
-    RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-    if(vuMark !=RelicRecoveryVuMark.UNKNOWN)
-            telemetry.addData("VuMark","%s visible",vuMark);
-    {
-    }
-
+            }
+    //}
 }
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
