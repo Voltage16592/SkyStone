@@ -17,7 +17,7 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
-    private DcMotor giraffeNeck =  null;
+    private DcMotor gNeck =  null;
     private Servo giraffeMouth = null;
     private DigitalChannel forwardLimitSwitch;
     private DigitalChannel reverseLimitSwitch;
@@ -26,7 +26,7 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
     static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 3.5;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+            (WHEEL_DIAMETER_INCHES * 3.14159267);
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
 
@@ -38,17 +38,17 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        giraffeNeck = hardwareMap.get(DcMotor.class, "giraffe_neck");
-        giraffeMouth = hardwareMap.get(Servo.class,  "giraffe_mouth");
+        gNeck = hardwareMap.get(DcMotor.class, "gNeck");
+        giraffeMouth = hardwareMap.get(Servo.class,  "giraffeMouth");
         forwardLimitSwitch = hardwareMap.get(DigitalChannel.class, "forwardLimitSwitch");
         reverseLimitSwitch = hardwareMap.get(DigitalChannel.class, "reverseLimitSwitch");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        giraffeNeck.setDirection(DcMotor.Direction.FORWARD);
+        gNeck.setDirection(DcMotor.Direction.FORWARD);
         giraffeMouth.setDirection(Servo.Direction.FORWARD);
-        giraffeNeck.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        gNeck.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -59,16 +59,16 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
 
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        giraffeNeck.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        gNeck.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        giraffeNeck.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        gNeck.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0", "Starting at %7d :%7d",
+        telemetry.addData("Path0", "Starting at ",
                 leftDrive.getCurrentPosition(),
                 rightDrive.getCurrentPosition(),
-                giraffeNeck.getCurrentPosition(),
+                gNeck.getCurrentPosition(),
                 giraffeMouth.getPosition());
 
         telemetry.update();
@@ -78,7 +78,7 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderArm(DRIVE_SPEED, 3, 5.0, 30);
+        encoderArm(DRIVE_SPEED, 15, 5.0, 60);
         //encoderDrive(DRIVE_SPEED, 48, 48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
         //encoderDrive(TURN_SPEED, 12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
@@ -92,30 +92,30 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
         int newServoTarget;
 
         if (opModeIsActive()) {
-            newUpTarget = giraffeNeck.getCurrentPosition() + (int) (degrees * COUNTS_PER_INCH);
-            newServoTarget = (int) giraffeMouth.getPosition() + (int) (servo * COUNTS_PER_INCH);
-            giraffeNeck.setTargetPosition(newUpTarget);
+            newUpTarget = gNeck.getCurrentPosition() + (int) (degrees * COUNTS_PER_INCH);
+            newServoTarget = (int) giraffeMouth.getPosition() + (int) (servo);
+            gNeck.setTargetPosition(newUpTarget);
             limit();
             giraffeMouth.setPosition(newServoTarget);
-            giraffeNeck.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            gNeck.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             runtime.reset();
-            giraffeNeck.setPower(Math.abs(speed));
+            gNeck.setPower(Math.abs(speed));
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (giraffeNeck.isBusy())) {
+                    (gNeck.isBusy())) {
 
                 // Display it for the driver.
                 limit();
-                telemetry.addData("Path1", "Running to %7d :%7d", newUpTarget);
-                telemetry.addData("Path2", "Running at %7d :%7d",
-                        giraffeNeck.getCurrentPosition());
+                telemetry.addData("Path1", "Running to ", newUpTarget);
+                telemetry.addData("Path2", "Running at ",
+                        gNeck.getCurrentPosition());
                 telemetry.update();
             }
 
-            giraffeNeck.setPower(0);
+            gNeck.setPower(0);
 
             // Turn off RUN_TO_POSITION
-            giraffeNeck.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            gNeck.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         }
@@ -156,8 +156,8 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
                     (leftDrive.isBusy() && rightDrive.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
-                telemetry.addData("Path2", "Running at %7d :%7d",
+                telemetry.addData("Path1", "Running to ", newLeftTarget, newRightTarget);
+                telemetry.addData("Path2", "Running at ",
                         leftDrive.getCurrentPosition(),
                         rightDrive.getCurrentPosition());
                 telemetry.update();
@@ -178,7 +178,7 @@ public class AOpModeFoundationWithEncoders extends LinearOpMode {
         double output;
         if (!isDetected(forwardLimitSwitch) || !isDetected(reverseLimitSwitch)) {
             output = 0;
-            giraffeNeck.setPower(output);
+            gNeck.setPower(output);
         }
 
     }
