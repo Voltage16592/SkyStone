@@ -104,21 +104,21 @@ public class TOpMode_FullBot
 
     private void report() {
         if (isDetected(forwardLimitSwitch)) {
-            telemetry.addData("forwardLimitSwitch", "detected");
+            //telemetry.addData("forwardLimitSwitch", "detected");
         } else {
-            telemetry.addData("forwardLimitSwitch", "not detected");
+            //telemetry.addData("forwardLimitSwitch", "not detected");
         }
         if (isDetected(reverseLimitSwitch)) {
-            telemetry.addData("reverseLimitSwitch", "detected");
+            //telemetry.addData("reverseLimitSwitch", "detected");
         } else {
-            telemetry.addData("reverseLimitSwitch", "not detected");
+            //telemetry.addData("reverseLimitSwitch", "not detected");
 
         }
-        telemetry.addData("Left Stick Value:", -gamepad1.left_stick_y);
-        telemetry.addData("Right Stick Value:", -gamepad1.right_stick_y);
+        //telemetry.addData("Left Stick Value:", -gamepad1.left_stick_y);
+        //telemetry.addData("Right Stick Value:", -gamepad1.right_stick_y);
 
-        telemetry.addData("Left Bumper", gamepad1.left_bumper);
-        telemetry.addData("Right Bumper", gamepad1.right_bumper);
+        //telemetry.addData("Left Bumper", gamepad1.left_bumper);
+        //jhtelemetry.addData("Right Bumper", gamepad1.right_bumper);
 
         telemetry.addData("Servo Position:", giraffeMouth.getPosition());
         telemetry.update();

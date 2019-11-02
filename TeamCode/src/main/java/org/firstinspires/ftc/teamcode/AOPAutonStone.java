@@ -6,7 +6,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 
 @Autonomous(name="AOPAutonStone", group="Iterative Opmode")
@@ -22,6 +31,13 @@ public class AOPAutonStone extends LinearOpMode {
     private DigitalChannel forwardLimitSwitch;
     private DigitalChannel reverseLimitSwitch;
 
+    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+    private static final boolean PHONE_IS_PORTRAIT = false  ;
+
+    private static final String VUFORIA_KEY =
+            "Ado05xz/////AAABmY8uetMq2krthNRU8hk1XbAPBHbJ/EVJizmHI/8Kz+HV4an+0zONWUZOd9XOiJIebM2WA7z/Wzffa9W87IrMnmb4pKEkY5dYbzjEdsDy28aKcZSkAu7jpO610LnMv+tWDKK3Chj+apf7OinQiaMnm9xSdjIOTxe6kegt5kHTY6inImWrZuHXe6trOfv48elrDyhrTDNELqZwjjG1LFZkGzgyKCQ9wvWcO0JXec+R5iQg+RMc92eqhCMv/6558QRae364puvHtp0OfszOivgelgFk901BvjQzTFzYnh80+tFWbiNNGfc6jzyz09xcWBR9B9xOsIPHcNPgsF9akWHjrEaDCtj/XdsrlqOf93xq31fl ";
+
+
     static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 3.5;     // For figuring circumference
@@ -29,10 +45,28 @@ public class AOPAutonStone extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * 3.14159267);
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
+    private VuforiaLocalizer vuforia = null;
 
     @Override
     public void runOpMode() {
 
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection   = CAMERA_CHOICE;
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Load the data sets for the trackable objects. These particular data
+        // sets are stored in the 'assets' part of our application.
+        VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+
+        VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
+        stoneTarget.setName("Stone Target");
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -87,9 +121,27 @@ public class AOPAutonStone extends LinearOpMode {
         telemetry.addData("Path", "Complete");
         telemetry.update();
 
-        encoderDrive(DRIVE_SPEED, 6, 6, 4);
-        encoderDrive(TURN_SPEED,);
+        encoderDrive(DRIVE_SPEED, 3, 3, 4);
+        encoderDrive(TURN_SPEED, 8.9339, -8.9339, 4);
+        runtime.reset();
+        while(((VuforiaTrackableDefaultListener)stoneTarget.getListener()).isVisible()) {
+            leftDrive.setPower(-0.3);
+            rightDrive.setPower(-0.3);
+        }
+
+        encoderDrive(DRIVE_SPEED, 4, 4, 4);
+        encoderDrive(TURN_SPEED, -8.9339, 8.9339, 4);
+        encoderDrive(DRIVE_SPEED, 4.5, 4.5, 4);
+        encoderArm(0.6,120,4,0);
+        giraffeMouth.setPosition(0);
+        encoderArm(0.6,-120,4,0);
+        encoderDrive(DRIVE_SPEED, -4.5, -4.5, 4);
+        encoderDrive(TURN_SPEED, -8.9339, 8.9339, 4);
+        encoderDrive(TURN_SPEED, 8.9339, -8.9339, 4);
+        encoderDrive(DRIVE_SPEED, 50, 50, 10);
+        giraffeMouth.setPosition(50);
     }
+
     public void encoderArm(double speed, double degrees, double timeoutS, double servo) {
         int newUpTarget;
         int newServoTarget;
