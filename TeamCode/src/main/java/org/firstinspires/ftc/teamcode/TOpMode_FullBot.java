@@ -28,6 +28,7 @@ public class TOpMode_FullBot
     private DigitalChannel forwardLimitSwitch;
     private DigitalChannel reverseLimitSwitch;
     private Servo giraffeMouth;
+    private Servo giraffeTail;
     private double giraffeScaler = 0.4;
 
     /*
@@ -44,6 +45,7 @@ public class TOpMode_FullBot
         gNeck.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         telemetry.addData("Status", "Running");
         giraffeMouth = hardwareMap.get(Servo.class, "giraffeMouth");
+        giraffeTail = hardwareMap.get(Servo.class, "giraffeTail");
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -75,6 +77,7 @@ public class TOpMode_FullBot
         limit();
         simpleTankDrive();
         giraffeMouthMovement();
+        giraffeTailMovement();
         report();
 
     }
@@ -135,6 +138,16 @@ public class TOpMode_FullBot
             giraffeMouth.setPosition(servoPos+0.01);
         }
 
+    }
+
+    private void giraffeTailMovement(){
+        //double servoPos = giraffeTail.getPosition();
+        double servoPos = 0;
+        if(gamepad1.a == true){ //to lower tail
+            giraffeTail.setPosition(servoPos+0.01);
+        } else if(gamepad1.b == true){ //to close mouth
+            giraffeTail.setPosition(servoPos-0.01);
+        }
     }
 
     private boolean isDetected(DigitalChannel limitSwitch) {
