@@ -29,7 +29,7 @@ public class TOpMode_FullBot
     private DigitalChannel reverseLimitSwitch;
     private Servo giraffeMouth;
     private Servo giraffeTail;
-    private double giraffeScaler = 0.4;
+    private double giraffeScaler = 0.3;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -93,13 +93,13 @@ public class TOpMode_FullBot
         double output;
         //Left bumper is for raising
         //Right bumper is for lowering
-        if (!isDetected(reverseLimitSwitch) && this.gamepad1.left_trigger > 0 && this.gamepad1.right_trigger == 0)
-            output = this.gamepad1.left_trigger*giraffeScaler;  //should only move forward if limit switch not pressed and only right trigger is
-        else if(!isDetected(forwardLimitSwitch) && this.gamepad1.right_trigger > 0 && this.gamepad1.left_trigger == 0) // If the reversed limit switch is pressed, we want to keep the values between 0 and 1
-            output = -this.gamepad1.right_trigger*giraffeScaler;    //should only move forward if limit switch not pressed and only left trigger is
+        if (!isDetected(reverseLimitSwitch) && gamepad1.left_trigger > 0 && gamepad1.right_trigger == 0)
+            output = gamepad1.left_trigger*giraffeScaler;  //should only move forward if limit switch not pressed and only right trigger is
+        else if(!isDetected(forwardLimitSwitch) && gamepad1.right_trigger > 0 && gamepad1.left_trigger == 0) // If the reversed limit switch is pressed, we want to keep the values between 0 and 1
+            output = -gamepad1.right_trigger*giraffeScaler;    //should only move forward if limit switch not pressed and only left trigger is
         else
             output = 0;
-        gNeck.setPower(output);
+        gNeck.setPower(ramp_Motor_Power(gNeck.getPower(), output));
     }
 
     private void report() {
@@ -120,13 +120,29 @@ public class TOpMode_FullBot
         //telemetry.addData("Left Bumper", gamepad1.left_bumper);
         //jhtelemetry.addData("Right Bumper", gamepad1.right_bumper);
 
-        telemetry.addData("Servo Position:", giraffeMouth.getPosition());
+        telemetry.addData("giraffeTail Position:", giraffeTail.getPosition());
         telemetry.update();
     }
 
     private void simpleTankDrive(){
-        right_drive.setPower(-gamepad1.right_stick_y);
-        left_drive.setPower(gamepad1.left_stick_y);
+        //if both sticks are within a certain reading (close enough) should make equalize powers to larger magnitude
+        double right_Desired_Power = -gamepad1.right_stick_y;
+        double left_Desired_Power = gamepad1.left_stick_y;
+        if(Math.abs(right_Desired_Power-left_Desired_Power)<=0.08){
+            if(Math.abs(right_Desired_Power)>Math.abs(left_Desired_Power))
+                left_Desired_Power = right_Desired_Power;
+            else
+                right_Desired_Power = left_Desired_Power;
+        }
+
+        //Only want to ramp power if increasing speed
+        if(Math.abs(right_Desired_Power) > Math.abs(right_drive.getPower()) && Math.abs(left_Desired_Power) > Math.abs(left_drive.getPower())) {
+            right_drive.setPower(ramp_Motor_Power(right_drive.getPower(), right_Desired_Power));
+            left_drive.setPower(ramp_Motor_Power(left_drive.getPower(), left_Desired_Power));
+        } else  {
+            right_drive.setPower(-gamepad1.right_stick_y);
+            left_drive.setPower(gamepad1.left_stick_y);
+        }
 
     }
 
@@ -141,16 +157,28 @@ public class TOpMode_FullBot
     }
 
     private void giraffeTailMovement(){
-        //double servoPos = giraffeTail.getPosition();
-        double servoPos = 0;
+        double servoPos = giraffeTail.getPosition();
+        //double servoPos = 0;
         if(gamepad1.a == true){ //to lower tail
-            giraffeTail.setPosition(servoPos+0.01);
-        } else if(gamepad1.b == true){ //to close mouth
             giraffeTail.setPosition(servoPos-0.01);
+        } else if(gamepad1.b == true){ //to raise tail
+            giraffeTail.setPosition(servoPos+0.01);
         }
+
     }
 
     private boolean isDetected(DigitalChannel limitSwitch) {
         return !limitSwitch.getState();
     } // for magnetic limit switches
+
+    private double ramp_Motor_Power(double current_Power, double desired_Power){
+        double diff = desired_Power-current_Power;
+        if (diff > 0.03)
+            current_Power += 0.03;
+        else if (diff < -0.03)
+            current_Power -= 0.03;
+        else
+            current_Power = desired_Power;
+        return current_Power;
+    }//to ramp power instead of going 0 to 100
 }

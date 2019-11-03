@@ -1,32 +1,27 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.hardware.Camera;
-import android.hardware.Camera.Parameters;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.vuforia.CameraDevice;
-import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-import com.qualcomm.robotcore.util.RobotLog;
 
-@Autonomous(name="AOPAutonStone", group="Iterative Opmode")
+
+@Autonomous(name="AOpMode_AutonStoneWVuforia", group="Iterative Opmode")
 //@Disabled
-public class AOPAutonStone extends LinearOpMode {
+public class AOpMode_AutonStoneWVuforia extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -66,13 +61,6 @@ public class AOPAutonStone extends LinearOpMode {
         parameters.cameraDirection   = CAMERA_CHOICE;
 
 
-        /*
-        cam = Camera.open();
-        Parameters p = cam.getParameters();
-        p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-        cam.setParameters(p);
-        cam.startPreview();
-*/
 
 
         //  Instantiate the Vuforia engine
@@ -101,9 +89,11 @@ public class AOPAutonStone extends LinearOpMode {
         giraffeMouth.setDirection(Servo.Direction.FORWARD);
         gNeck.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        telemetry.setAutoClear(false);
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -112,9 +102,9 @@ public class AOPAutonStone extends LinearOpMode {
 
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        gNeck.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        gNeck.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0", "Starting at %d %d %d %d",
+        telemetry.addData("Path0", "Starting at ",
                 leftDrive.getCurrentPosition(),
                 rightDrive.getCurrentPosition(),
                 gNeck.getCurrentPosition(),
@@ -141,13 +131,16 @@ public class AOPAutonStone extends LinearOpMode {
         runtime.reset();
         targetsSkyStone.activate();
 
-        /*
+
 
         CameraDevice.getInstance().setFlashTorchMode(true);
 
         encoderDrive(DRIVE_SPEED, 21.75*Adjust, 21.75*Adjust, 4);
 
         encoderDrive(TURN_SPEED, 2.1*8.9339*Adjust, -2.1*8.9339*Adjust, 4);
+
+
+
 
 
         while (!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
@@ -164,82 +157,64 @@ public class AOPAutonStone extends LinearOpMode {
         encoderDrive(DRIVE_SPEED, 4, 4, 4);
         encoderDrive(TURN_SPEED, -8.9339, 8.9339, 4);
         encoderDrive(DRIVE_SPEED, 4.5, 4.5, 4);
-        */
 
 
 
-        // encoderDrive(1, 3, 3, 4);
-        encoderArm(0.3,-10000,4,0);
-        sleep(10*1000);
-        encoderArm(0.6,10000,4,0);
-        sleep(10000000);
 
 
-        /*
+
+
+        encoderDrive(1, -7.5*Adjust, -7.5*Adjust, 4);
+        encoderArm(0.6,1000,4,0);
         giraffeMouth.setPosition(0);
         telemetry.addData("Path2", "Running at ",
                 gNeck.getCurrentPosition());
 
+        telemetry.update();
         encoderArm(0.6,-120,4,0);
         telemetry.addData("Path2", "Running at ",
                 gNeck.getCurrentPosition());
+        telemetry.update();
         encoderDrive(DRIVE_SPEED, -4.5*Adjust, -4.5*Adjust, 4);
         encoderDrive(TURN_SPEED, 2.1*8.9339*Adjust, 2.1*-8.9339*Adjust, 4);
         //encoderDrive(TURN_SPEED, 8.9339*Adjust, -8.9339*Adjust, 4);
         encoderDrive(DRIVE_SPEED, 30*Adjust, 30*Adjust, 10);
         giraffeMouth.setPosition(50);
 
-        */
 
     }
 
-    public void encoderArm(double speed, int counts, double timeoutS, double servo) {
+    public void encoderArm(double speed, double degrees, double timeoutS, double servo) {
         int newUpTarget;
-        // int newServoTarget;
-
-        telemetry.addData("encoderArm", "(%.3f, %d, %.3f, %.3f)", speed, counts, timeoutS, servo);
+        int newServoTarget;
 
         if (opModeIsActive()) {
-            newUpTarget = gNeck.getCurrentPosition() + counts;
+            newUpTarget = gNeck.getCurrentPosition() + (int) (degrees);
             // newServoTarget = (int) giraffeMouth.getPosition() + (int) (servo);
-
-            RobotLog.d("test1", "this is a test");
-            telemetry.addData("Position", "current=%d new = %d", gNeck.getCurrentPosition(), newUpTarget);
-            sleep(5*1000);
-
-            gNeck.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             gNeck.setTargetPosition(newUpTarget);
+            limit();
             // giraffeMouth.setPosition(newServoTarget);
+            gNeck.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             runtime.reset();
             gNeck.setPower(Math.abs(speed));
-            limit();
-
-            int iCount = 0;
-            boolean opModeActive;
-            double secs=0;
-            boolean bBusy;
-            do {
-                iCount++;
-                opModeActive = opModeIsActive();
-                secs = runtime.seconds();
-                bBusy = gNeck.isBusy();
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (gNeck.isBusy())) {
 
                 // Display it for the driver.
                 limit();
-                telemetry.addData("Path1", "iCount=%d seconds()=%.3f",
-                        iCount, secs);
-                telemetry.addData("Path1", "Running from %d to %d",
-                        gNeck.getCurrentPosition(), newUpTarget);
-                telemetry.addData("finished", "iCount=%d opModeIsActive=%d, runtime.seconds()=%.3f, gNeck.isBusy()=%d",
-                        iCount, opModeActive,secs,bBusy);
-                telemetry.update();
+                telemetry.addData("Path1", "Running to ", newUpTarget);
+                telemetry.addData("Path2", "Running at ",
+                        gNeck.getCurrentPosition());
 
-                } while(opModeActive && (secs < timeoutS) && bBusy);
+                telemetry.update();
+            }
 
             gNeck.setPower(0);
 
             // Turn off RUN_TO_POSITION
             gNeck.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         }
     }
