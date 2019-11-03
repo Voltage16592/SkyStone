@@ -159,7 +159,7 @@ public class TOpMode_FullBot
     private void giraffeTailMovement(){
         double servoPos = giraffeTail.getPosition();
         //double servoPos = 0;
-        if(gamepad1.a == true){ //to lower tail
+        if(gamepad1.a == true && giraffeTail.getPosition()>0.1){ //to lower tail
             giraffeTail.setPosition(servoPos-0.01);
         } else if(gamepad1.b == true){ //to raise tail
             giraffeTail.setPosition(servoPos+0.01);
