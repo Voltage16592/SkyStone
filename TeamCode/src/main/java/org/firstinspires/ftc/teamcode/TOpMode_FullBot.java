@@ -27,6 +27,7 @@ public class TOpMode_FullBot
     private DcMotor right_drive;
     private DigitalChannel forwardLimitSwitch;
     private DigitalChannel reverseLimitSwitch;
+    private DigitalChannel backLimitSwitch;
     private Servo giraffeMouth;
     private Servo giraffeTail;
     private double giraffeScaler = 0.4;
@@ -39,6 +40,7 @@ public class TOpMode_FullBot
 
         forwardLimitSwitch = hardwareMap.get(DigitalChannel.class, "forwardLimitSwitch");
         reverseLimitSwitch = hardwareMap.get(DigitalChannel.class, "reverseLimitSwitch");
+        backLimitSwitch = hardwareMap.get(DigitalChannel.class, "backLimitSwitch");
         gNeck = hardwareMap.get(DcMotor.class, "gNeck");
         left_drive = hardwareMap.get(DcMotor.class, "left_drive");
         right_drive = hardwareMap.get(DcMotor.class, "right_drive");
@@ -114,6 +116,12 @@ public class TOpMode_FullBot
             //telemetry.addData("reverseLimitSwitch", "not detected");
 
         }
+        if (backLimitSwitch.getState()) {
+            telemetry.addData("backLimitSwitch", "true");
+        } else {
+            telemetry.addData("backLimitSwitch", "false");
+        }
+        telemetry.addData("giraffebTail", giraffeTail.getPosition());
         //telemetry.addData("Left Stick Value:", -gamepad1.left_stick_y);
         //telemetry.addData("Right Stick Value:", -gamepad1.right_stick_y);
 
@@ -141,14 +149,15 @@ public class TOpMode_FullBot
     }
 
     private void giraffeTailMovement(){
-        //double servoPos = giraffeTail.getPosition();
-        double servoPos = 0;
-        if(gamepad1.a == true){ //to lower tail
+        double servoPos = giraffeTail.getPosition();
+        //double servoPos = 0;
+        if(gamepad1.a == true && backLimitSwitch.getState()){ //to lift tail
             giraffeTail.setPosition(servoPos+0.01);
-        } else if(gamepad1.b == true){ //to close mouth
+        } else if(gamepad1.b == true){ //to lower tail
             giraffeTail.setPosition(servoPos-0.01);
         }
-    }
+
+}
 
     private boolean isDetected(DigitalChannel limitSwitch) {
         return !limitSwitch.getState();
