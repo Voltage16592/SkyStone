@@ -59,20 +59,9 @@ public class AOPAutonStone extends LinearOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
-        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection   = CAMERA_CHOICE;
 
-
-        /*
-        cam = Camera.open();
-        Parameters p = cam.getParameters();
-        p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-        cam.setParameters(p);
-        cam.startPreview();
-*/
 
 
         //  Instantiate the Vuforia engine
@@ -113,7 +102,9 @@ public class AOPAutonStone extends LinearOpMode {
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         gNeck.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         // Send telemetry message to indicate successful Encoder reset
+        /*
         telemetry.addData("Path0", "Starting at %d %d %d %d",
                 leftDrive.getCurrentPosition(),
                 rightDrive.getCurrentPosition(),
@@ -121,8 +112,7 @@ public class AOPAutonStone extends LinearOpMode {
                 giraffeMouth.getPosition());
 
         telemetry.update();
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
+*/        // Wait for the game to start (driver presses PLAY)
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
@@ -132,16 +122,19 @@ public class AOPAutonStone extends LinearOpMode {
         //encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
         //sleep(1000);     // pause for servos to move
 
-        telemetry.addData("Path", "Complete");
+        //telemetry.addData("Path", "Complete");
+        telemetry.addData("Start", "successful");
         telemetry.update();
 
 
 
-
+        waitForStart();
         runtime.reset();
+        /*
         targetsSkyStone.activate();
 
-        /*
+        telemetry.addData("targetSkyStone", "activated");
+
 
         CameraDevice.getInstance().setFlashTorchMode(true);
 
@@ -168,10 +161,9 @@ public class AOPAutonStone extends LinearOpMode {
 
 
 
-        // encoderDrive(1, 3, 3, 4);
-        encoderArm(0.3,-10000,4,0);
-        sleep(10*1000);
-        encoderArm(0.6,10000,4,0);
+        encoderDrive(1, 3, 3, 4);
+        encoderArm(0.3,5000,4,0);
+        encoderArm(-0.6,-5000,4,0);
         sleep(10000000);
 
 
@@ -197,22 +189,25 @@ public class AOPAutonStone extends LinearOpMode {
         int newUpTarget;
         // int newServoTarget;
 
+        telemetry.addLine();
         telemetry.addData("encoderArm", "(%.3f, %d, %.3f, %.3f)", speed, counts, timeoutS, servo);
+        telemetry.update();
 
         if (opModeIsActive()) {
+            gNeck.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            gNeck.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             newUpTarget = gNeck.getCurrentPosition() + counts;
             // newServoTarget = (int) giraffeMouth.getPosition() + (int) (servo);
 
             RobotLog.d("test1", "this is a test");
             telemetry.addData("Position", "current=%d new = %d", gNeck.getCurrentPosition(), newUpTarget);
-            sleep(5*1000);
-
-            gNeck.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            telemetry.update();
             gNeck.setTargetPosition(newUpTarget);
             // giraffeMouth.setPosition(newServoTarget);
             runtime.reset();
-            gNeck.setPower(Math.abs(speed));
-            limit();
+            gNeck.setPower(speed);
+            limit(speed);
 
             int iCount = 0;
             boolean opModeActive;
@@ -225,13 +220,19 @@ public class AOPAutonStone extends LinearOpMode {
                 bBusy = gNeck.isBusy();
 
                 // Display it for the driver.
-                limit();
+                if(limit(speed)) break;
                 telemetry.addData("Path1", "iCount=%d seconds()=%.3f",
                         iCount, secs);
+                telemetry.update();
                 telemetry.addData("Path1", "Running from %d to %d",
-                        gNeck.getCurrentPosition(), newUpTarget);
-                telemetry.addData("finished", "iCount=%d opModeIsActive=%d, runtime.seconds()=%.3f, gNeck.isBusy()=%d",
-                        iCount, opModeActive,secs,bBusy);
+                        (int)gNeck.getCurrentPosition(), (int)newUpTarget);
+
+            telemetry.update();
+
+               telemetry.addData("test","4");
+               telemetry.update();
+               telemetry.addData("finished", "iCount=%d opModeIsActive=%d, runtime.seconds()=%.3f, gNeck.isBusy()=%d",
+                       (int)iCount, (int)(opModeActive ? 1:0),secs,bBusy ? 1:0);
                 telemetry.update();
 
                 } while(opModeActive && (secs < timeoutS) && bBusy);
@@ -250,12 +251,14 @@ public class AOPAutonStone extends LinearOpMode {
         int newLeftTarget;
         int newRightTarget;
 
-        // Ensure that the opmode is still active
+        // Ensure that the OpMode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newRightTarget = rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            int curLeftPos = leftDrive.getCurrentPosition();
+            int curRightPos = rightDrive.getCurrentPosition();
+            newLeftTarget = curLeftPos + (int) (leftInches * COUNTS_PER_INCH);
+            newRightTarget = curRightPos + (int) (rightInches * COUNTS_PER_INCH);
             leftDrive.setTargetPosition(newLeftTarget);
             rightDrive.setTargetPosition(newRightTarget);
 
@@ -263,10 +266,12 @@ public class AOPAutonStone extends LinearOpMode {
             leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+            double rightDriveSpeed = Math.abs(speed) * ((newRightTarget-curRightPos)/Math.abs(newRightTarget-curRightPos));
+            double leftDriveSpeed = Math.abs(speed) * ((newLeftTarget-curLeftPos)/Math.abs(newLeftTarget-curLeftPos));
             // reset the timeout time and start motion.
             runtime.reset();
-            leftDrive.setPower(Math.abs(speed));
-            rightDrive.setPower(Math.abs(speed));
+            leftDrive.setPower(leftDriveSpeed);
+            rightDrive.setPower(rightDriveSpeed);
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
@@ -297,12 +302,15 @@ public class AOPAutonStone extends LinearOpMode {
             //  sleep(250);   // optional pause after each move
         }
     }
-    private void limit(){
+    private boolean limit(double desired_Speed){
         double output;
-        if (!isDetected(forwardLimitSwitch) || !isDetected(reverseLimitSwitch)) {
+        if ((desired_Speed<0 && isDetected(forwardLimitSwitch)) || (desired_Speed>0 && isDetected(reverseLimitSwitch))) {
             output = 0;
             gNeck.setPower(output);
+            telemetry.addData("limit", "*******stopping because of limit");
+            return true;
         }
+        return false;
 
     }
     private boolean isDetected(DigitalChannel limitSwitch) {

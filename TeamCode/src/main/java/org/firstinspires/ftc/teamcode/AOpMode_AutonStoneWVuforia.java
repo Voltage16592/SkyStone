@@ -54,14 +54,8 @@ public class AOpMode_AutonStoneWVuforia extends LinearOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
-        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection   = CAMERA_CHOICE;
-
-
-
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -126,14 +120,9 @@ public class AOpMode_AutonStoneWVuforia extends LinearOpMode {
         telemetry.update();
 
 
-
-
         runtime.reset();
         targetsSkyStone.activate();
-
-
-
-        CameraDevice.getInstance().setFlashTorchMode(true);
+        CameraDevice.getInstance().setFlashTorchMode(true);//turn on flashlight
 
         encoderDrive(DRIVE_SPEED, 21.75*Adjust, 21.75*Adjust, 4);
 
@@ -192,7 +181,7 @@ public class AOpMode_AutonStoneWVuforia extends LinearOpMode {
             newUpTarget = gNeck.getCurrentPosition() + (int) (degrees);
             // newServoTarget = (int) giraffeMouth.getPosition() + (int) (servo);
             gNeck.setTargetPosition(newUpTarget);
-            limit();
+            limit(speed);
             // giraffeMouth.setPosition(newServoTarget);
             gNeck.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             runtime.reset();
@@ -202,7 +191,7 @@ public class AOpMode_AutonStoneWVuforia extends LinearOpMode {
                     (gNeck.isBusy())) {
 
                 // Display it for the driver.
-                limit();
+                limit(speed);
                 telemetry.addData("Path1", "Running to ", newUpTarget);
                 telemetry.addData("Path2", "Running at ",
                         gNeck.getCurrentPosition());
@@ -272,14 +261,18 @@ public class AOpMode_AutonStoneWVuforia extends LinearOpMode {
             //  sleep(250);   // optional pause after each move
         }
     }
-    private void limit(){
+    private boolean limit(double desired_Speed){
         double output;
-        if (!isDetected(forwardLimitSwitch) || !isDetected(reverseLimitSwitch)) {
+        if ((desired_Speed<0 && isDetected(forwardLimitSwitch)) || (desired_Speed>0 && isDetected(reverseLimitSwitch))) {
             output = 0;
             gNeck.setPower(output);
+            telemetry.addData("limit", "*******stopping because of limit");
+            return true;
         }
+        return false;
 
     }
+
     private boolean isDetected(DigitalChannel limitSwitch) {
         return !limitSwitch.getState();
     }

@@ -114,7 +114,7 @@ public class TOpMode_FullBot
             //telemetry.addData("reverseLimitSwitch", "not detected");
 
         }
-        //telemetry.addData("Left Stick Value:", -gamepad1.left_stick_y);
+        //telemetry.addData("Left S  mm stick Value:", -gamepad1.left_stick_y);
         //telemetry.addData("Right Stick Value:", -gamepad1.right_stick_y);
 
         //telemetry.addData("Left Bumper", gamepad1.left_bumper);
