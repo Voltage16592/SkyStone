@@ -56,7 +56,7 @@ public class AOpLastResort extends LinearOpMode {
         waitForStart();
 
         sleep(22*1000);
-        encoderDrive(DRIVE_SPEED, 30, 30, 4);
+        encoderDrive(DRIVE_SPEED, 20, 20, 4);
 
     }
 

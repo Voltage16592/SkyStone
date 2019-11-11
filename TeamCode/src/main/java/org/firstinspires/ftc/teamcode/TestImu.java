@@ -18,14 +18,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 @Autonomous(name="TestImu", group="Exercises")
 //@Disabled
 public class TestImu extends LinearOpMode
 {
-    DcMotor                 leftMotor, rightMotor;
+    DcMotor                 left_drive, right_drive;
     TouchSensor             touch;
     BNO055IMU               imu;
     Orientation             lastAngles = new Orientation();
@@ -36,16 +34,16 @@ public class TestImu extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        leftMotor = hardwareMap.dcMotor.get("left_motor");
-        rightMotor = hardwareMap.dcMotor.get("right_motor");
+        left_drive = hardwareMap.dcMotor.get("left_drive");
+        right_drive = hardwareMap.dcMotor.get("right_drive");
 
-        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+        left_drive.setDirection(DcMotor.Direction.REVERSE);
 
-        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // get a reference to touch sensor.
-        touch = hardwareMap.touchSensor.get("touch_sensor");
+        //touch = hardwareMap.touchSensor.get("touch_sensor");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -86,6 +84,8 @@ public class TestImu extends LinearOpMode
 
         // drive until end of period.
 
+        rotate(90, 0.5);
+
         while (opModeIsActive())
         {
             // Use gyro to drive in a straight line.
@@ -96,8 +96,8 @@ public class TestImu extends LinearOpMode
             telemetry.addData("3 correction", correction);
             telemetry.update();
 
-            leftMotor.setPower(power - correction);
-            rightMotor.setPower(power + correction);
+            left_drive.setPower(power - correction);
+            right_drive.setPower(power + correction);
 
             // We record the sensor values because we will test them in more than
             // one place with time passing between those places. See the lesson on
@@ -110,14 +110,14 @@ public class TestImu extends LinearOpMode
             if (touched || aButton || bButton)
             {
                 // backup.
-                leftMotor.setPower(power);
-                rightMotor.setPower(power);
+                left_drive.setPower(power);
+                right_drive.setPower(power);
 
                 sleep(500);
 
                 // stop.
-                leftMotor.setPower(0);
-                rightMotor.setPower(0);
+                left_drive.setPower(0);
+                right_drive.setPower(0);
 
                 // turn 90 degrees right.
                 if (touched || aButton) rotate(-90, power);
@@ -128,8 +128,8 @@ public class TestImu extends LinearOpMode
         }
 
         // turn the motors off.
-        rightMotor.setPower(0);
-        leftMotor.setPower(0);
+        right_drive.setPower(0);
+        left_drive.setPower(0);
     }
 
     /**
@@ -219,8 +219,8 @@ public class TestImu extends LinearOpMode
         else return;
 
         // set power to rotate.
-        leftMotor.setPower(leftPower);
-        rightMotor.setPower(rightPower);
+        left_drive.setPower(leftPower);
+        right_drive.setPower(rightPower);
 
         // rotate until turn is completed.
         if (degrees < 0)
@@ -234,8 +234,8 @@ public class TestImu extends LinearOpMode
             while (opModeIsActive() && getAngle() < degrees) {}
 
         // turn the motors off.
-        rightMotor.setPower(0);
-        leftMotor.setPower(0);
+        right_drive.setPower(0);
+        left_drive.setPower(0);
 
         // wait for rotation to stop.
         sleep(1000);

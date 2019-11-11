@@ -97,17 +97,19 @@ public class AOPAutonStoneRED extends LinearOpMode {
 
 
 
-        encoderDrive(0.75, 2.25, 2.25, 4);//drive forward
+        encoderDrive(0.75, 2.1, 2.1, 4);//drive forward
         giraffeMouth.setPosition(0.75);//open mouth
         sleep(500);
-        encoderArm(0.2,-1000,3);//bring neck down
-        sleep(2000);
+        encoderArm(0.175,-900,3);//bring neck down
+        sleep(3000);
         giraffeMouth.setPosition(0);//eat stone
         sleep(1000);
         encoderArm(-0.3,200,2);//lift neck up
-        encoderDrive(0.75, -0.5, -0.5, 2);//Back up
-        encoderDrive(0.75, -2.1, 2.1, 2);//Turn Left
-        encoderDrive(0.75, 1, 1, 4);//drive forward
+        encoderDrive(0.75, -0.75, -0.75, 2);//Back up, parking on inside (away from walls)
+        //encoderDrive(0.5, -3, -3, 4);//Back up outside, close to wall parking
+        encoderDrive(0.75, 3.5, -3.5, 2);//Turn Right
+        encoderArm(-0.3,200,2);//lift neck up
+        encoderDrive(0.75, 1.25, 1.25, 4);//drive forward
         giraffeMouth.setPosition(0.75);//throw up
         encoderDrive(0.75, -0.25, -0.25, 2);//Back up
 
