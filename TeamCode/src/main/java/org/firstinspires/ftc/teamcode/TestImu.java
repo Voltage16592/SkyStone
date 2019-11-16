@@ -34,7 +34,7 @@ public class TestImu extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         left_drive = hardwareMap.dcMotor.get("left_drive");
-        right_drive = hardwareMap.dcMotor.get("right_drive5");
+        right_drive = hardwareMap.dcMotor.get("right_drive");
 
         left_drive.setDirection(DcMotor.Direction.REVERSE);
 
@@ -93,15 +93,19 @@ public class TestImu extends LinearOpMode
             telemetry.addData("3 correction", correction);
             telemetry.update();
 
-            left_drive.setPower(power - correction);
-            right_drive.setPower(power + correction);
+            //left_drive.setPower(power - correction);
+            //right_drive.setPower(power + correction);
 
             // We record the sensor values because we will test them in more than
             // one place with time passing between those places. See the lesson on
             // Timing Considerations to know why.
 
-            aButton = gamepad1.a;
-            bButton = gamepad1.b;
+            if(gamepad1.a == true){
+                rotate(90,power-correction);
+            }
+            if(gamepad1.b == true){
+                rotate(-90,power+correction);
+            }
 
 
         }
