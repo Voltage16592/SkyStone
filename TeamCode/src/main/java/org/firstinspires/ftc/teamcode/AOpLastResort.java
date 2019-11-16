@@ -7,24 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.vuforia.CameraDevice;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
-
-import android.hardware.Camera;
-
-import android.hardware.Camera.Parameters;
-
-
-import java.sql.Driver;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-
 
 @Autonomous(name="AOpLastResort", group="Linear Opmode")
 //@Disabled
@@ -74,7 +56,7 @@ public class AOpLastResort extends LinearOpMode {
         waitForStart();
 
         sleep(22*1000);
-        encoderDrive(DRIVE_SPEED, 35, 35, 4);
+        encoderDrive(DRIVE_SPEED, 20, 20, 4);
 
     }
 

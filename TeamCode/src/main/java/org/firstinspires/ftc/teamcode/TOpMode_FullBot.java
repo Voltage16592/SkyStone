@@ -114,6 +114,8 @@ public class TOpMode_FullBot
             //telemetry.addData("reverseLimitSwitch", "not detected");
 
         }
+        telemetry.addData("left stick reading", gamepad1.left_stick_y);
+        telemetry.addData("left_drive power", left_drive.getPower());
         //telemetry.addData("Left S  mm stick Value:", -gamepad1.left_stick_y);
         //telemetry.addData("Right Stick Value:", -gamepad1.right_stick_y);
 
@@ -149,9 +151,9 @@ public class TOpMode_FullBot
     private void giraffeMouthMovement(){
         double servoPos = giraffeMouth.getPosition();
         if(gamepad1.left_bumper == true){ //to close mouth
-            giraffeMouth.setPosition(servoPos-0.01);
+            giraffeMouth.setPosition(servoPos-0.05);
         } else if(gamepad1.right_bumper == true){ //to open mouth
-            giraffeMouth.setPosition(servoPos+0.01);
+            giraffeMouth.setPosition(servoPos+0.05);
         }
 
     }
@@ -159,7 +161,7 @@ public class TOpMode_FullBot
     private void giraffeTailMovement(){
         double servoPos = giraffeTail.getPosition();
         //double servoPos = 0;
-        if(gamepad1.a == true){ //to lower tail
+        if(gamepad1.a == true && giraffeTail.getPosition()>0.1){ //to lower tail
             giraffeTail.setPosition(servoPos-0.01);
         } else if(gamepad1.b == true){ //to raise tail
             giraffeTail.setPosition(servoPos+0.01);
@@ -173,10 +175,10 @@ public class TOpMode_FullBot
 
     private double ramp_Motor_Power(double current_Power, double desired_Power){
         double diff = desired_Power-current_Power;
-        if (diff > 0.03)
-            current_Power += 0.03;
-        else if (diff < -0.03)
-            current_Power -= 0.03;
+        if (diff > 0.04)
+            current_Power += 0.04;
+        else if (diff < -0.04)
+            current_Power -= 0.04;
         else
             current_Power = desired_Power;
         return current_Power;
