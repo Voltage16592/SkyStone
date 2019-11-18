@@ -4,13 +4,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class SubSys_MecDrive {
-    private DcMotor fleft_drive;//front left motor
-    private DcMotor fright_drive;//front right motor
-    private DcMotor bleft_drive;//back left motor
-    private DcMotor bright_drive;//back left motor
-    public HardwareMap hardwareMap;
+    DcMotor fleft_drive;//front left motor
+    DcMotor fright_drive;//front right motor
+    DcMotor bleft_drive;//back left motor
+    DcMotor bright_drive;//back left motor
+    HardwareMap hardwareMap;
 
-    public SubSys_MecDrive(){}
+    SubSys_MecDrive(){}
 
     public void init(HardwareMap hM){
         this.hardwareMap = hM;
@@ -51,9 +51,18 @@ public class SubSys_MecDrive {
 
 
     private void setMotorPowerAll(double fl, double fr, double bl, double br) {
-        fleft_drive.setPower(fl);
-        fright_drive.setPower(fr);
-        bleft_drive.setPower(bl);
-        bright_drive.setPower(br);
+        fleft_drive.setPower(ramp_Motor_Power(fleft_drive.getPower(), fl));
+        fright_drive.setPower(ramp_Motor_Power(fright_drive.getPower(), fr));
+        bleft_drive.setPower(ramp_Motor_Power(bleft_drive.getPower(), bl));
+        bright_drive.setPower(ramp_Motor_Power(bright_drive.getPower(), br));
+    }
+
+    private double ramp_Motor_Power(double current_Power, double desired_Power){
+        double diff = desired_Power-current_Power;
+        if(Math.abs(desired_Power) <0.2 || Math.abs(diff)<0.05)
+            current_Power = desired_Power;
+        else
+            current_Power += (diff/(Math.abs(diff)))*0.05;
+        return current_Power;
     }
 }
