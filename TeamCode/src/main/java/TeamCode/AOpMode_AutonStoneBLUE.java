@@ -1,16 +1,18 @@
-package org.firstinspires.ftc.teamcode;
+package TeamCode;
+
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import com.qualcomm.robotcore.util.RobotLog;
 
-@Autonomous(name="AOPAutonStoneRED", group="Iterative Opmode")
+@Autonomous(name="AOpMode_AutonStoneBLUE", group="Iterative Opmode")
 //@Disabled
-public class AOPAutonStoneRED extends LinearOpMode {
+public class AOpMode_AutonStoneBLUE extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -107,7 +109,7 @@ public class AOPAutonStoneRED extends LinearOpMode {
         encoderArm(-0.3,200,2);//lift neck up
         encoderDrive(0.75, -0.75, -0.75, 2);//Back up, parking on inside (away from walls)
         //encoderDrive(0.5, -3, -3, 4);//Back up outside, close to wall parking
-        encoderDrive(0.75, 3.5, -3.5, 2);//Turn Right
+        encoderDrive(0.75, -3.5, 3.5 , 2);//Turn left
         encoderArm(-0.3,200,2);//lift neck up
         encoderDrive(0.75, 1.25, 1.25, 4);//drive forward
         giraffeMouth.setPosition(0.75);//throw up

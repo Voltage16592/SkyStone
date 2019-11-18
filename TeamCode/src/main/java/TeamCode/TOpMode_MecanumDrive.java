@@ -4,7 +4,7 @@
 
 //version 1
 
-package org.firstinspires.ftc.teamcode;
+package TeamCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="TOpMode_FullBot", group="Iterative Opmode")
+@TeleOp(name="TOpMode_MecanumDrive", group="Iterative Opmode")
 //@Disabled
 public class TOpMode_MecanumDrive
         extends OpMode

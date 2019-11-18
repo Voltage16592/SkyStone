@@ -1,14 +1,12 @@
 /*Created by Lucas Wu (including stuff stolen from George and Mira)
  */
-package org.firstinspires.ftc.teamcode;
+package TeamCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorDigitalTouch;
 
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
 
@@ -26,11 +24,11 @@ import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TOpModeTankDriveClawAndArmWLimitSwitches", group="Iterative Opmode")
+@TeleOp(name="TOpModeTankDriveClawNoArm", group="Iterative Opmode")
 //@Disabled
 
 
-public class TOpModeTankDriveClawAndArmWLimitSwitches extends OpMode
+public class TOpModeTankDriveClawNoArm extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -38,7 +36,6 @@ public class TOpModeTankDriveClawAndArmWLimitSwitches extends OpMode
     private DcMotor rightDrive = null;
     private DcMotor georgeIsBad = null;
     private Servo servo1 = null;
-    private SensorDigitalTouch limitSwitchForward = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -52,7 +49,6 @@ public class TOpModeTankDriveClawAndArmWLimitSwitches extends OpMode
         // step (using the FTC Robot Controller app on the phone).
         leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        limitSwitchForward = hardwareMap.get(SensorDigitalTouch.class, "limitSwitchForward");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery

@@ -28,7 +28,7 @@
  */
 // By Mira Chew and Lucas Wu
 
-package org.firstinspires.ftc.teamcode;
+package TeamCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

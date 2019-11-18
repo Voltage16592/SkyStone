@@ -4,20 +4,19 @@
 
 //version 1
 
-package org.firstinspires.ftc.teamcode;
+package TeamCode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="TOpMode_FullBot", group="Iterative Opmode")
+
+@TeleOp(name="TOpMode_FullBotWSubSys", group="Iterative Opmode")
 //@Disabled
-public class TOpMode_FullBot
+public class TOpMode_FullBotWSubSys
         extends OpMode
 {
     // Declare OpMode members.

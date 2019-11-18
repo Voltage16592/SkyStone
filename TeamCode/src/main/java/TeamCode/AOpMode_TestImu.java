@@ -6,7 +6,7 @@
 //
 // Also uses IMU to drive in a straight line when not avoiding an obstacle.
 
-package org.firstinspires.ftc.teamcode;
+package TeamCode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -19,9 +19,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(name="TestImu", group="Exercises")
+@Autonomous(name="AOpMode_TestImu", group="Exercises")
 //@Disabled
-public class TestImu extends LinearOpMode
+public class AOpMode_TestImu extends LinearOpMode
 {
     DcMotor                 left_drive, right_drive;
     BNO055IMU               imu;

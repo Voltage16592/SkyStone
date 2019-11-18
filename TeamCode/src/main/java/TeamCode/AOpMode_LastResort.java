@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package TeamCode;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="AOpLastResort", group="Linear Opmode")
+@Autonomous(name="AOpMode_LastResort", group="Linear Opmode")
 //@Disabled
-public class AOpLastResort extends LinearOpMode {
+public class AOpMode_LastResort extends LinearOpMode {
 
     /* Declare OpMode members. */
 

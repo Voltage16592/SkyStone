@@ -1,7 +1,7 @@
 //Created by George WAng
 // /* Copyright (c) 2017 FIRST. All rights reserved.
 
-package org.firstinspires.ftc.teamcode;
+package TeamCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
