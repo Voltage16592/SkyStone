@@ -19,27 +19,22 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(name="AOpMode_TestImu", group="Exercises")
+@Autonomous(name="TestImu", group="Exercises")
 //@Disabled
-public class AOpMode_TestImu extends LinearOpMode
+public class TOpModeTestImu extends LinearOpMode
 {
-    DcMotor                 left_drive, right_drive;
     BNO055IMU               imu;
     Orientation             lastAngles = new Orientation();
     double                  globalAngle, power = .30, correction;
     boolean                 aButton, bButton, touched;
+    private SubSys_MecDrive mecDrive = new SubSys_MecDrive();
 
     // called when init button is  pressed.
     @Override
     public void runOpMode() throws InterruptedException
     {
-        left_drive = hardwareMap.dcMotor.get("left_drive");
-        right_drive = hardwareMap.dcMotor.get("right_drive");
+        mecDrive.init(hardwareMap);
 
-        left_drive.setDirection(DcMotor.Direction.REVERSE);
-
-        left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // get a reference to touch sensor.
 
@@ -79,10 +74,10 @@ public class AOpMode_TestImu extends LinearOpMode
         telemetry.addData("Mode", "running");
         telemetry.update();
 
-        sleep(1000);
+        //sleep(1000);
 
-        rotate(90,0.5);
-        sleep(2000);
+        //rotate(90,0.5);
+        //sleep(2000);
         while (opModeIsActive())
         {
             // Use gyro to drive in a straight line.
@@ -100,19 +95,12 @@ public class AOpMode_TestImu extends LinearOpMode
             // one place with time passing between those places. See the lesson on
             // Timing Considerations to know why.
 
-            if(gamepad1.a == true){
-                rotate(90,power-correction);
-            }
-            if(gamepad1.b == true){
-                rotate(-90,power+correction);
-            }
+            simpleMecDrive();
 
 
         }
 
-        // turn the motors off.
-        right_drive.setPower(0);
-        left_drive.setPower(0);
+
     }
 
     /**
@@ -179,6 +167,7 @@ public class AOpMode_TestImu extends LinearOpMode
      * Rotate left or right the number of degrees. Does not support turning more than 180 degrees.
      * @param degrees Degrees to turn, + is left - is right
      */
+   /*
     private void rotate(int degrees, double power)
     {
         double  leftPower, rightPower;
@@ -202,8 +191,10 @@ public class AOpMode_TestImu extends LinearOpMode
         else return;
 
         // set power to rotate.
-        left_drive.setPower(leftPower);
-        right_drive.setPower(rightPower);
+        fleft_drive.setPower(leftPower);
+        fleft_drive.setPower(leftPower);
+        bright_drive.setPower(rightPower);
+        fright_drive.setPower(rightPower);
 
         // rotate until turn is completed.
         if (degrees < 0)
@@ -217,8 +208,10 @@ public class AOpMode_TestImu extends LinearOpMode
             while (opModeIsActive() && getAngle() < degrees) {}
 
         // turn the motors off.
-        right_drive.setPower(0);
-        left_drive.setPower(0);
+        fright_drive.setPower(0);
+        bright_drive.setPower(0);
+        fleft_drive.setPower(0);
+        bleft_drive.setPower(0);
 
         // wait for rotation to stop.
         sleep(1000);
@@ -226,4 +219,13 @@ public class AOpMode_TestImu extends LinearOpMode
         // reset angle tracking on new heading.
         resetAngle();
     }
+
+    */
+
+    private void simpleMecDrive(){
+        mecDrive.move(-gamepad1.right_stick_y, -gamepad1.right_stick_x, gamepad1.right_trigger, gamepad1.left_trigger);
+
+
+    }
+
 }

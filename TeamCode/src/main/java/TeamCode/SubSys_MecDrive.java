@@ -8,6 +8,7 @@ public class SubSys_MecDrive {
     DcMotor fright_drive;//front right motor
     DcMotor bleft_drive;//back left motor
     DcMotor bright_drive;//back left motor
+    double fleft_multiplier = 0.945;
     HardwareMap hardwareMap;
 
     SubSys_MecDrive(){}
@@ -15,9 +16,14 @@ public class SubSys_MecDrive {
     public void init(HardwareMap hM){
         this.hardwareMap = hM;
         fleft_drive = hardwareMap.get(DcMotor.class, "fleft_drive");
+        fleft_drive.setDirection(DcMotor.Direction.REVERSE);
         fright_drive = hardwareMap.get(DcMotor.class, "fright_drive");
+        fright_drive.setDirection(DcMotor.Direction.FORWARD);
         bleft_drive = hardwareMap.get(DcMotor.class, "bleft_drive");
+        bleft_drive.setDirection(DcMotor.Direction.REVERSE);
         bright_drive = hardwareMap.get(DcMotor.class, "bright_drive");
+        bright_drive.setDirection(DcMotor.Direction.FORWARD);
+
     }
 
     public void move(double fwd_bkwd, double rt_lt, double clockwise_speed, double counterClockwise_speed){
@@ -51,10 +57,18 @@ public class SubSys_MecDrive {
 
 
     private void setMotorPowerAll(double fl, double fr, double bl, double br) {
-        fleft_drive.setPower(ramp_Motor_Power(fleft_drive.getPower(), fl));
+        fleft_drive.setPower(ramp_Motor_Power(fleft_drive.getPower(), fl)*fleft_multiplier);
         fright_drive.setPower(ramp_Motor_Power(fright_drive.getPower(), fr));
         bleft_drive.setPower(ramp_Motor_Power(bleft_drive.getPower(), bl));
         bright_drive.setPower(ramp_Motor_Power(bright_drive.getPower(), br));
+    }
+
+    public double fleft_changeM(boolean up, boolean down){
+        if(up)
+            fleft_multiplier+=0.01;
+        else if (down)
+            fleft_multiplier -=0.01;
+        return fleft_multiplier;
     }
 
     private double ramp_Motor_Power(double current_Power, double desired_Power){
