@@ -12,7 +12,7 @@ public class SubSys_MecDrive {
     DcMotor fright_drive;//front right motor
     DcMotor bleft_drive;//back left motor
     DcMotor bright_drive;//back left motor
-    double fleft_multiplier = 0.945;
+    double fleft_multiplier = 0.91;
     HardwareMap hardwareMap;
 
     SubSys_MecDrive(){}

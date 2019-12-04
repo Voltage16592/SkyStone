@@ -81,11 +81,11 @@ public class TOpModeTestImu extends LinearOpMode
         while (opModeIsActive())
         {
             // Use gyro to drive in a straight line.
-            correction = checkDirection();
+            //correction = checkDirection();
 
             telemetry.addData("1 imu heading", lastAngles.firstAngle);
             telemetry.addData("2 global heading", globalAngle);
-            telemetry.addData("3 correction", correction);
+            //telemetry.addData("3 correction", correction);
             telemetry.update();
 
             //left_drive.setPower(power - correction);
@@ -110,7 +110,7 @@ public class TOpModeTestImu extends LinearOpMode
     {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-        globalAngle = 0;
+        //globalAngle = 0;
     }
 
     /**
@@ -144,7 +144,7 @@ public class TOpModeTestImu extends LinearOpMode
      * See if we are moving in a straight line and if not return a power correction value.
      * @return Power adjustment, + is adjust left - is adjust right.
      */
-    private double checkDirection()
+    /*private double checkDirection()
     {
         // The gain value determines how sensitive the correction is to direction changes.
         // You will have to experiment with your robot to get small smooth direction changes
@@ -162,7 +162,7 @@ public class TOpModeTestImu extends LinearOpMode
 
         return correction;
     }
-
+    */
     /**
      * Rotate left or right the number of degrees. Does not support turning more than 180 degrees.
      * @param degrees Degrees to turn, + is left - is right
