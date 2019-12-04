@@ -276,4 +276,5 @@ public class AOpMode_AutonStoneWVuforia extends LinearOpMode {
     private boolean isDetected(DigitalChannel limitSwitch) {
         return !limitSwitch.getState();
     }
+
 }
