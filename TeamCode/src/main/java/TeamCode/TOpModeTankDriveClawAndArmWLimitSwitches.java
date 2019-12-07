@@ -2,6 +2,7 @@
  */
 package TeamCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -27,7 +28,7 @@ import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
  */
 
 @TeleOp(name="TOpModeTankDriveClawAndArmWLimitSwitches", group="Iterative Opmode")
-//@Disabled
+@Disabled
 
 
 public class TOpModeTankDriveClawAndArmWLimitSwitches extends OpMode

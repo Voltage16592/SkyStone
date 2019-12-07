@@ -3,6 +3,7 @@
 
 package TeamCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name="TOpModeLimitSwitchTestMotor", group="Iterative Opmode")
 
 //when disabled won't exist
-//@Disabled
+@Disabled
 public class TOpModeLimitSwitchTestMotor extends OpMode
 {
     // Declare OpMode members.

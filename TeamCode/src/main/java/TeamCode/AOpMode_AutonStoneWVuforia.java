@@ -71,8 +71,8 @@ public class AOpMode_AutonStoneWVuforia extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        gNeck = hardwareMap.get(DcMotor.class, "gNeck");
-        giraffeMouth = hardwareMap.get(Servo.class,  "giraffeMouth");
+        gNeck = hardwareMap.get(DcMotor.class, "eTrunk");
+        giraffeMouth = hardwareMap.get(Servo.class,  "eNose");
         forwardLimitSwitch = hardwareMap.get(DigitalChannel.class, "forwardLimitSwitch");
         reverseLimitSwitch = hardwareMap.get(DigitalChannel.class, "reverseLimitSwitch");
         // Most robots need the motor on one side to be reversed to drive forward
@@ -179,10 +179,10 @@ public class AOpMode_AutonStoneWVuforia extends LinearOpMode {
 
         if (opModeIsActive()) {
             newUpTarget = gNeck.getCurrentPosition() + (int) (degrees);
-            // newServoTarget = (int) giraffeMouth.getPosition() + (int) (servo);
+            // newServoTarget = (int) eNose.getPosition() + (int) (servo);
             gNeck.setTargetPosition(newUpTarget);
             limit(speed);
-            // giraffeMouth.setPosition(newServoTarget);
+            // eNose.setPosition(newServoTarget);
             gNeck.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             runtime.reset();
             gNeck.setPower(Math.abs(speed));

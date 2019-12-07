@@ -6,21 +6,20 @@
 
 package TeamCode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-@TeleOp(name="TOpMode_FullBot", group="Iterative Opmode")
+@TeleOp(name="TOpMode_ElephBot", group="Iterative Opmode")
 //@Disabled
-public class TOpMode_FullBot
+public class TOpMode_ElephBot
         extends OpMode
 {
     // Declare OpMode members.
+
     private ElapsedTime runtime = new ElapsedTime();
-    private SubSys_TankDrive tankDrive = new SubSys_TankDrive();
-    private SubSys_Giraffe giraffe = new SubSys_Giraffe();
+    private SubSys_MecDrive mecDrive = new SubSys_MecDrive();
+    private SubSys_Elephant elephant = new SubSys_Elephant();
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -29,8 +28,12 @@ public class TOpMode_FullBot
     public void init() {
 
         telemetry.addData("Status", "Running");
-        tankDrive.init(hardwareMap);
-        giraffe.init(hardwareMap);
+
+
+        mecDrive.init(hardwareMap);
+        elephant.init(hardwareMap);
+
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
@@ -58,10 +61,13 @@ public class TOpMode_FullBot
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        giraffe.limit(gamepad1);
-        tankDrive.move(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
-        giraffe.moveMouth(gamepad1);
-        giraffe.moveTail(gamepad1);
+
+        mecDrive.move(-gamepad1.right_stick_y,   -gamepad1.right_stick_x, gamepad1.right_trigger, gamepad1.left_trigger);
+
+        elephant.moveTrunk(gamepad2);
+        elephant.moveNose(gamepad2);
+        elephant.moveTail(gamepad2);
+
         report();
 
     }
@@ -74,29 +80,16 @@ public class TOpMode_FullBot
     }
 
 
-
     private void report() {
-        if (giraffe.isDetected(giraffe.forwardLimitSwitch)) {
-            //telemetry.addData("forwardLimitSwitch", "detected");
-        } else {
-            //telemetry.addData("forwardLimitSwitch", "not detected");
-        }
-        if (giraffe.isDetected(giraffe.reverseLimitSwitch)) {
-            //telemetry.addData("reverseLimitSwitch", "detected");
-        } else {
-            //telemetry.addData("reverseLimitSwitch", "not detected");
 
-        }
-        telemetry.addData("left stick reading", gamepad1.left_stick_y);
-        telemetry.addData("left_drive power", tankDrive.left_drive.getPower());
-        telemetry.addData("right stick reading", gamepad1.right_stick_y);
-        telemetry.addData("right_drive power", tankDrive.right_drive.getPower());
+        telemetry.addData("right_stick_y", gamepad1.right_stick_y);
+        telemetry.addData("right_stick_x", gamepad1.right_stick_x);
+        telemetry.addData("left_trigger", gamepad1.left_trigger);
+        telemetry.addData("right_trigger", gamepad1.right_trigger);
 
 
-        telemetry.addData("giraffeTail Position:", giraffe.giraffeTail.getPosition());
         telemetry.update();
     }
-
 
 
     private double ramp_Motor_Power(double current_Power, double desired_Power){

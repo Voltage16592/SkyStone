@@ -15,6 +15,12 @@ public class SubSys_MecDrive {
     double fleft_multiplier = 0.91;
     HardwareMap hardwareMap;
 
+    //for encoder driving:
+    static final double COUNTS_PER_MOTOR_REV = 2240;    // eg: TETRIX Motor Encoder
+    static final double WHEEL_DIAMETER_INCHES = 3.5;     // For figuring circumference
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV) /
+            (WHEEL_DIAMETER_INCHES * 3.14159265);
+
     SubSys_MecDrive(){}
 
     public void init(HardwareMap hM){
@@ -31,7 +37,9 @@ public class SubSys_MecDrive {
     }
 
     public void move(double fwd_bkwd, double rt_lt, double clockwise_speed, double counterClockwise_speed){
-        if ((fwd_bkwd <-0.25 || fwd_bkwd>0.25) &&rt_lt >-0.25 && rt_lt <0.25 ) {
+
+
+        if ((fwd_bkwd <-0.25 || fwd_bkwd>0.25) && rt_lt >-0.25 && rt_lt <0.25 ) {
             setMotorPowerAll(fwd_bkwd,fwd_bkwd, fwd_bkwd, fwd_bkwd);
         }   //Moves motor forward and backward
 
@@ -67,13 +75,6 @@ public class SubSys_MecDrive {
         bright_drive.setPower(ramp_Motor_Power(bright_drive.getPower(), br));
     }
 
-    public double fleft_changeM(boolean up, boolean down){
-        if(up)
-            fleft_multiplier+=0.01;
-        else if (down)
-            fleft_multiplier -=0.01;
-        return fleft_multiplier;
-    }
 
     private double ramp_Motor_Power(double current_Power, double desired_Power){
         double diff = desired_Power-current_Power;

@@ -395,10 +395,10 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
 
         if (opModeIsActive()) {
             newUpTarget = gNeck.getCurrentPosition() + (int) (degrees);
-            // newServoTarget = (int) giraffeMouth.getPosition() + (int) (servo);
+            // newServoTarget = (int) eNose.getPosition() + (int) (servo);
             gNeck.setTargetPosition(newUpTarget);
             limit(speed);
-            // giraffeMouth.setPosition(newServoTarget);
+            // eNose.setPosition(newServoTarget);
             gNeck.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             runtime.reset();
             gNeck.setPower(Math.abs(speed));

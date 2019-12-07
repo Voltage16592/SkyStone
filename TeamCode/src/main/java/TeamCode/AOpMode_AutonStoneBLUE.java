@@ -41,8 +41,8 @@ public class AOpMode_AutonStoneBLUE extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        gNeck = hardwareMap.get(DcMotor.class, "gNeck");
-        giraffeMouth = hardwareMap.get(Servo.class,  "giraffeMouth");
+        gNeck = hardwareMap.get(DcMotor.class, "eTrunk");
+        giraffeMouth = hardwareMap.get(Servo.class,  "eNose");
         forwardLimitSwitch = hardwareMap.get(DigitalChannel.class, "forwardLimitSwitch");
         reverseLimitSwitch = hardwareMap.get(DigitalChannel.class, "reverseLimitSwitch");
         // Most robots need the motor on one side to be reversed to drive forward
@@ -71,8 +71,8 @@ public class AOpMode_AutonStoneBLUE extends LinearOpMode {
         telemetry.addData("Path0", "Starting at %d %d %d %d",
                 leftDrive.getCurrentPosition(),
                 rightDrive.getCurrentPosition(),
-                gNeck.getCurrentPosition(),
-                giraffeMouth.getPosition());
+                eTrunk.getCurrentPosition(),
+                eNose.getPosition());
 
         telemetry.update();
 */        // Wait for the game to start (driver presses PLAY)
@@ -130,13 +130,13 @@ public class AOpMode_AutonStoneBLUE extends LinearOpMode {
             gNeck.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             newNeckTarget = gNeck.getCurrentPosition() + counts;
-            // newServoTarget = (int) giraffeMouth.getPosition() + (int) (servo);
+            // newServoTarget = (int) eNose.getPosition() + (int) (servo);
 
             RobotLog.d("test1", "this is a test");
             telemetry.addData("Position", "current=%d new = %d", gNeck.getCurrentPosition(), newNeckTarget);
             telemetry.update();
             gNeck.setTargetPosition(newNeckTarget);
-            // giraffeMouth.setPosition(newServoTarget);
+            // eNose.setPosition(newServoTarget);
             runtime.reset();
             gNeck.setPower(speed);
             limit(speed);
@@ -158,10 +158,10 @@ public class AOpMode_AutonStoneBLUE extends LinearOpMode {
                         iCount, secs);
                 telemetry.update();
                 telemetry.addData("Path1", "Running from %d to %d",
-                        gNeck.getCurrentPosition(), newNeckTarget);
+                        eTrunk.getCurrentPosition(), newNeckTarget);
                 telemetry.update();
 
-                telemetry.addData("finished", "iCount=%d opModeIsActive=%d, runtime.seconds()=%.3f, gNeck.isBusy()=%d",
+                telemetry.addData("finished", "iCount=%d opModeIsActive=%d, runtime.seconds()=%.3f, eTrunk.isBusy()=%d",
                        iCount, (opModeActive ? 1:0),secs,bBusy ? 1:0);
                 */
                 telemetry.addData("speed", speed);

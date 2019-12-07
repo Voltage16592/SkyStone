@@ -25,7 +25,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name="TOpModeTankDrive", group="Iterative Opmode")
-//@Disabled
+@Disabled
 
 
 public class TOpModeTankDrive extends OpMode

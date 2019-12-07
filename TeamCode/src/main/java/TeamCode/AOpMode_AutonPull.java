@@ -84,11 +84,11 @@ public class AOpMode_AutonPull extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        giraffeTail = hardwareMap.get(Servo.class, "giraffeTail");
+        giraffeTail = hardwareMap.get(Servo.class, "eTail");
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        gNeck = hardwareMap.get(DcMotor.class, "gNeck");
-        giraffeMouth = hardwareMap.get(Servo.class,  "giraffeMouth");
+        gNeck = hardwareMap.get(DcMotor.class, "eTrunk");
+        giraffeMouth = hardwareMap.get(Servo.class,  "eNose");
         forwardLimitSwitch = hardwareMap.get(DigitalChannel.class, "forwardLimitSwitch");
         reverseLimitSwitch = hardwareMap.get(DigitalChannel.class, "reverseLimitSwitch");
         // Most robots need the motor on one side to be reversed to drive forward

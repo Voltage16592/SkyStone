@@ -24,9 +24,9 @@ public class SubSys_Giraffe {
         this.hardwareMap = hM;
         forwardLimitSwitch = hardwareMap.get(DigitalChannel.class, "forwardLimitSwitch");
         reverseLimitSwitch = hardwareMap.get(DigitalChannel.class, "reverseLimitSwitch");
-        gNeck = hardwareMap.get(DcMotor.class, "gNeck");
-        giraffeMouth = hardwareMap.get(Servo.class, "giraffeMouth");
-        giraffeTail = hardwareMap.get(Servo.class, "giraffeTail");
+        gNeck = hardwareMap.get(DcMotor.class, "eTrunk");
+        giraffeMouth = hardwareMap.get(Servo.class, "eNose");
+        giraffeTail = hardwareMap.get(Servo.class, "eTail");
 
 
     }

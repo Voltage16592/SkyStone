@@ -6,6 +6,7 @@
 
 package TeamCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,9 +15,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="TOpMode_FullBotWSubSys", group="Iterative Opmode")
-//@Disabled
-public class TOpMode_FullBotWSubSys
+@TeleOp(name="TOpMode_FullGiraffeBot", group="Iterative Opmode")
+@Disabled
+public class TOpMode_FullGiraffeBot
         extends OpMode
 {
     // Declare OpMode members.
@@ -38,13 +39,13 @@ public class TOpMode_FullBotWSubSys
 
         forwardLimitSwitch = hardwareMap.get(DigitalChannel.class, "forwardLimitSwitch");
         reverseLimitSwitch = hardwareMap.get(DigitalChannel.class, "reverseLimitSwitch");
-        gNeck = hardwareMap.get(DcMotor.class, "gNeck");
+        gNeck = hardwareMap.get(DcMotor.class, "eTrunk");
         left_drive = hardwareMap.get(DcMotor.class, "left_drive");
         right_drive = hardwareMap.get(DcMotor.class, "right_drive");
         gNeck.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         telemetry.addData("Status", "Running");
-        giraffeMouth = hardwareMap.get(Servo.class, "giraffeMouth");
-        giraffeTail = hardwareMap.get(Servo.class, "giraffeTail");
+        giraffeMouth = hardwareMap.get(Servo.class, "eNose");
+        giraffeTail = hardwareMap.get(Servo.class, "eTail");
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -121,7 +122,7 @@ public class TOpMode_FullBotWSubSys
         //telemetry.addData("Left Bumper", gamepad1.left_bumper);
         //jhtelemetry.addData("Right Bumper", gamepad1.right_bumper);
 
-        telemetry.addData("giraffeTail Position:", giraffeTail.getPosition());
+        telemetry.addData("eTail Position:", giraffeTail.getPosition());
         telemetry.update();
     }
 

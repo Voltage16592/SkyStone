@@ -1,10 +1,12 @@
 package TeamCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 @TeleOp(name="TOpModeSimpleLimitSwitchTest", group="Iterative Opmode")
+@Disabled
 public class TOpModeSimpleLimitSwitchTest extends LinearOpMode {
 
     private DigitalChannel forwardLimitSwitch;
