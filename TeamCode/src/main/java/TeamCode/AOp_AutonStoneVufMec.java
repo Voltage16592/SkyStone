@@ -168,7 +168,7 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
 
         double D1 = 8; // move halfway between stone and wall
         double D2 = 8.78; // once sky stone found, move to sky stone
-        double D3 = 13+8.78; // move under the bridge to drop stone
+        double D3 = 21.78; // move under the bridge to drop stone
         double D4 = 24; // move under the bridge
         encoderDrive(0.8,D1, D1, 4000, true);
         /*
@@ -187,7 +187,13 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
         //encoderDrive(1.0,D4, D4, 4000, false);
         //setdown
         //encoderDrive(1.0,-D4, -D4, 4000, false);
+        while (!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
+            telemetry.addData("Visible Target", "None");
+            telemetry.update();
+        }
 
+        telemetry.addData("Visible Target", "SkyStone");
+        telemetry.update();
         runtime.reset();
         CameraDevice.getInstance().setFlashTorchMode(true);//turn on flashlight
 
