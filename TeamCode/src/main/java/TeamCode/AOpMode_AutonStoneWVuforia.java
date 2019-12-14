@@ -3,6 +3,7 @@ package TeamCode;
 import android.hardware.Camera;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -20,7 +21,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 
 @Autonomous(name="AOpMode_AutonStoneWVuforia", group="Iterative Opmode")
-//@Disabled
+@Disabled
 public class AOpMode_AutonStoneWVuforia extends LinearOpMode {
 
     // Declare OpMode members.

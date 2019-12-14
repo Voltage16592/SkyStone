@@ -1,6 +1,7 @@
 package TeamCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -9,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 @Autonomous(name="AOpMode_AutonStoneRED", group="Iterative Opmode")
-//@Disabled
+@Disabled
 public class AOpMode_AutonStoneRED extends LinearOpMode {
 
     // Declare OpMode members.

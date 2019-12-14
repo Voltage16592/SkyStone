@@ -12,7 +12,7 @@ public class SubSys_MecDrive {
     DcMotor fright_drive;//front right motor
     DcMotor bleft_drive;//back left motor
     DcMotor bright_drive;//back left motor
-    double fleft_multiplier = 0.91;
+    double fleft_multiplier = 0.95;
     HardwareMap hardwareMap;
 
     //for encoder driving:
@@ -20,6 +20,7 @@ public class SubSys_MecDrive {
     static final double WHEEL_DIAMETER_INCHES = 3.5;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV) /
             (WHEEL_DIAMETER_INCHES * 3.14159265);
+    static final double Adjust = 1/9.52;
 
     SubSys_MecDrive(){}
 
@@ -84,6 +85,8 @@ public class SubSys_MecDrive {
             current_Power += (diff/(Math.abs(diff)))*0.05;
         return current_Power;
     }
+
+
 
 
 }

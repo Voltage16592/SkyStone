@@ -2,6 +2,7 @@ package TeamCode;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -22,7 +23,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 
 @Autonomous(name="AOpMode_AutonPull", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class AOpMode_AutonPull extends LinearOpMode {
 
     /* Declare OpMode members. */
