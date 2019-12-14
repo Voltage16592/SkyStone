@@ -6,15 +6,19 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class SubSys_MecDrive {
     DcMotor fleft_drive;//front left motor
     DcMotor fright_drive;//front right motor
-    DcMotor bleft_drive;//back left motor
+    DcMotor bleft_drive;//back left motorh
+
     DcMotor bright_drive;//back left motor
     double fleft_multiplier = 0.91;
     HardwareMap hardwareMap;
-
+    //telemetry.addData("fuck you");
     //for encoder driving:
     static final double COUNTS_PER_MOTOR_REV = 2240;    // eg: TETRIX Motor Encoder
     static final double WHEEL_DIAMETER_INCHES = 3.5;     // For figuring circumference
@@ -86,4 +90,7 @@ public class SubSys_MecDrive {
     }
 
 
-}
+    }
+
+
+
