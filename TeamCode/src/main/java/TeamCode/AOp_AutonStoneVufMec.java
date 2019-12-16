@@ -29,28 +29,15 @@
 
 package TeamCode;
 
-import android.hardware.Camera;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-import com.vuforia.CameraDevice;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name=" AOp_AutonStoneVufMec", group="Linear Opmode")
 public class AOp_AutonStoneVufMec extends LinearOpMode {
@@ -78,7 +65,7 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
     static final double TURN_SPEED = 0.5;
     private SubSys_MecDrive mecDrive = new SubSys_MecDrive();
     private Subsys_Vuforia vuforiaSys = new Subsys_Vuforia();
-    private Subsys_gyroscope subsysGyroscope = new Subsys_gyroscope();
+    private Subsys_gyroscope gyroscope = new Subsys_gyroscope();
 
 
     @Override
@@ -86,10 +73,12 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
 
             telemetry.update();
         mecDrive.init(hardwareMap);
+        telemetry.addData("MecDrive:", "Initialized");
         vuforiaSys.runOpMode(hardwareMap);
-        telemetry.addData("Vuforia", "initialized");
-        subsysGyroscope.init(hardwareMap);
-
+        telemetry.addData("Vuforia:", "Initialized");
+        gyroscope.init(hardwareMap);
+        telemetry.addData("Gyroscope:","Calibrated");
+        telemetry.update();
         waitForStart();
 
 
@@ -99,14 +88,19 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
         double D2 = 8.78; // once sky stone found, move to sky stone
         double D3 = 21.78; // move under the bridge to drop stone
         double D4 = 24; // move under the bridge
-        //encoderDrive(0.8,D1, D1, 4000, true);
-        //encoderDrive(1.0,D2, D2, 4000, false);
+        encoderDrive(1.0, 35, 35, 4000, false);
+        /*
+        encoderDrive(1.0,D1, D1, 4000, false);
+        encoderDrive(1.0,D2, D2, 4000, false)
         //pickup
+        encoderDrive(1.0, -12, -12, 4000, false);
+        rotate(74, 1.0);
         //encoderDrive(1.0,-D3, -D3, 4000, false);
-        //rotate(-74, 1.0);
-        //encoderDrive(1.0,D4, D4, 4000, false);
+
+        encoderDrive(1.0,D4, D4, 4000, false);
         //setdown
-        //encoderDrive(1.0,-D4, -D4, 4000, false);
+        encoderDrive(1.0,-D4, -D4, 4000, false);
+        */
         /*
         telemetry.addData("Visible Target", "None");
 
@@ -115,11 +109,10 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
         telemetry.update();
         runtime.reset();
         */
-        subsysGyroscope.rotate(360, 1.0);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetry.addData("imu", subsysGyroscope.getAngle());
+            telemetry.addData("imu", gyroscope.getAngle());
             telemetry.addData("bright pos", mecDrive.bright_drive.getCurrentPosition());
             telemetry.addData("bleft pos", mecDrive.bleft_drive.getCurrentPosition());
             telemetry.addData("fright pos", mecDrive.fright_drive.getCurrentPosition());
@@ -164,10 +157,20 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
 
             newLeftTarget = /*mecDrive.fleft_drive.getCurrentPosition() + */(int) (leftInches * COUNTS_PER_INCH);
             newRightTarget = /*mecDrive.fright_drive.getCurrentPosition() + */(int) (rightInches * COUNTS_PER_INCH);
+            /*
             mecDrive.fleft_drive.setTargetPosition(newLeftTarget*y);
             mecDrive.fright_drive.setTargetPosition(newRightTarget);
             mecDrive.bleft_drive.setTargetPosition(newLeftTarget);
             mecDrive.bright_drive.setTargetPosition(newRightTarget*y);
+        */
+            double increment = speed/10;
+            int ALP = newLeftTarget-(int)(0.5*speed)* (int) (0.182+0.25);
+            int ARP = newRightTarget-(int)(0.5*speed)* (int) (0.182+0.25);
+            mecDrive.fleft_drive.setTargetPosition(ALP*y);
+            mecDrive.fright_drive.setTargetPosition(ARP);
+            mecDrive.bleft_drive.setTargetPosition(ALP);
+            mecDrive.bright_drive.setTargetPosition(ARP*y);
+
 
             telemetry.addData("bright pos", mecDrive.bright_drive.getCurrentPosition());
             telemetry.addData("bleft pos", mecDrive.bleft_drive.getCurrentPosition());
@@ -181,13 +184,25 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
             mecDrive.bleft_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             mecDrive.bright_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            // reset the timeout time and start motion.
+            // reset the timeout time and start motion
+
+            double currentPower = 0;
             runtime.reset();
-            mecDrive.fleft_drive.setPower(Math.abs(speed)*fleft_multiplier1*y);
-            mecDrive.fright_drive.setPower(Math.abs(speed));
-            mecDrive.bleft_drive.setPower(Math.abs(speed));
-            mecDrive.bright_drive.setPower(Math.abs(speed)*y);
-            //setMotorPowerAll(pow*y,pow,pow,pow*y);
+            while(currentPower < speed) {
+                mecDrive.fleft_drive.setPower(Math.abs(currentPower) * fleft_multiplier1 * y);
+                mecDrive.fright_drive.setPower(Math.abs(currentPower));
+                mecDrive.bleft_drive.setPower(Math.abs(currentPower));
+                mecDrive.bright_drive.setPower(Math.abs(currentPower) * y);
+                currentPower += increment;
+                telemetry.addData("currentPower", currentPower);
+                telemetry.addData("Desired Power:", speed);
+                telemetry.update();
+                sleep(25);
+            }
+
+            double time = runtime.seconds();
+
+
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
@@ -199,6 +214,22 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
                     (runtime.seconds() < timeoutS) &&
                     (mecDrive.fleft_drive.isBusy() && mecDrive.fright_drive.isBusy()&& mecDrive.bleft_drive.isBusy() && mecDrive.bright_drive.isBusy())) {
             }
+            setMotorPowerAll(speed, speed, speed, speed);
+            boolean did = false;
+            while(currentPower > 0) {
+                mecDrive.fleft_drive.setPower(Math.abs(currentPower) * fleft_multiplier1 * y);
+                mecDrive.fright_drive.setPower(Math.abs(currentPower));
+                mecDrive.bleft_drive.setPower(Math.abs(currentPower));
+                mecDrive.bright_drive.setPower(Math.abs(currentPower) * y);
+                currentPower -= increment;
+                telemetry.addData("currentPower", currentPower);
+                telemetry.addData("Desired Power:", 0);
+                telemetry.update();
+                sleep(25);
+                did = true;
+            }
+            telemetry.addData("did", did);
+            telemetry.update();
 
             // Stop all motion;
             mecDrive.fleft_drive.setPower(0);
@@ -226,10 +257,10 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
     }
 
      private void setMotorPowerAll(double fl, double fr, double bl, double br) {
-         mecDrive.fleft_drive.setPower(ramp_Motor_Power(mecDrive.fleft_drive.getPower(), fl)*fleft_multiplier);
-         mecDrive.fright_drive.setPower(ramp_Motor_Power(mecDrive.fright_drive.getPower(), fr));
-         mecDrive.bleft_drive.setPower(ramp_Motor_Power(mecDrive.bleft_drive.getPower(), bl));
-         mecDrive.bright_drive.setPower(ramp_Motor_Power(mecDrive.bright_drive.getPower(), br));
+         mecDrive.fleft_drive.setPower(fl*fleft_multiplier);
+         mecDrive.fright_drive.setPower(fr);
+         mecDrive.bleft_drive.setPower(bl);
+         mecDrive.bright_drive.setPower(br);
     }
     /*
     private void resetAngle()
@@ -283,6 +314,58 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
         }
         return false;
 
+    }
+
+    public void rotate(int degrees, double power)
+    {
+        double  leftPower, rightPower;
+
+        // restart imu movement tracking.
+        gyroscope.resetAngle();
+
+        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
+        // clockwise (right).
+
+        if (degrees < 0)
+        {   // turn right.
+            leftPower = power;
+            rightPower = -power;
+        }
+        else if (degrees > 0)
+        {   // turn left.
+            leftPower = -power;
+            rightPower = power;
+        }
+        else return;
+
+        // set power to rotate.
+        mecDrive.fleft_drive.setPower(leftPower*fleft_multiplier);
+        mecDrive.fleft_drive.setPower(leftPower);
+        mecDrive.bright_drive.setPower(rightPower);
+        mecDrive.fright_drive.setPower(rightPower);
+
+        // rotate until turn is completed.
+        if (degrees < 0)
+        {
+            // On right turn we have to get off zero first.
+            while (opModeIsActive() && gyroscope.getAngle() == 0) {}
+
+            while (opModeIsActive() && gyroscope.getAngle() > degrees) {}
+        }
+        else    // left turn.
+            while (opModeIsActive() && gyroscope.getAngle() < degrees) {}
+
+        // turn the motors off.
+        mecDrive.fright_drive.setPower(0);
+        mecDrive.bright_drive.setPower(0);
+        mecDrive.fleft_drive.setPower(0);
+        mecDrive.bleft_drive.setPower(0);
+
+        // wait for rotation to stop.
+        //sleep(1000);
+
+        // reset angle tracking on new heading.
+        gyroscope.resetAngle();
     }
 
     private boolean isDetected(DigitalChannel limitSwitch) {

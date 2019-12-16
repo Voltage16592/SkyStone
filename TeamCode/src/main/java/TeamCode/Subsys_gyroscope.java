@@ -123,55 +123,5 @@ public class Subsys_gyroscope extends LinearOpMode {
         globalAngle = 0;
     }
 
-    public void rotate(int degrees, double power)
-    {
-        double  leftPower, rightPower;
 
-        // restart imu movement tracking.
-        resetAngle();
-
-        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
-        // clockwise (right).
-
-        if (degrees < 0)
-        {   // turn right.
-            leftPower = power;
-            rightPower = -power;
-        }
-        else if (degrees > 0)
-        {   // turn left.
-            leftPower = -power;
-            rightPower = power;
-        }
-        else return;
-
-        // set power to rotate.
-        mecDrive.fleft_drive.setPower(leftPower*fleft_multiplier);
-        mecDrive.fleft_drive.setPower(leftPower);
-        mecDrive.bright_drive.setPower(rightPower);
-        mecDrive.fright_drive.setPower(rightPower);
-
-        // rotate until turn is completed.
-        if (degrees < 0)
-        {
-            // On right turn we have to get off zero first.
-            while (opModeIsActive() && getAngle() == 0) {}
-
-            while (opModeIsActive() && getAngle() > degrees) {}
-        }
-        else    // left turn.
-            while (opModeIsActive() && getAngle() < degrees) {}
-
-        // turn the motors off.
-        mecDrive.fright_drive.setPower(0);
-        mecDrive.bright_drive.setPower(0);
-        mecDrive.fleft_drive.setPower(0);
-        mecDrive.bleft_drive.setPower(0);
-
-        // wait for rotation to stop.
-        //sleep(1000);
-
-        // reset angle tracking on new heading.
-        resetAngle();
-    }
 }
