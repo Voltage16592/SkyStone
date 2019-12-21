@@ -126,14 +126,13 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
 
         int newLeftTarget;
         int newRightTarget;
+        int newfLeftTarget;
         int y = 1;
         double adjust = 0.15;
         leftInches *= adjust;
         rightInches *= adjust;
-        double fleft_multiplier1 = fleft_multiplier;
         if (Sideways == true){
            y = -1;
-           fleft_multiplier1 = 1;
         }
         double pow = Math.abs(speed);
         // Ensure that the opmode is still active
@@ -155,22 +154,14 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
 
-            newLeftTarget = /*mecDrive.fleft_drive.getCurrentPosition() + */(int) (leftInches * COUNTS_PER_INCH);
-            newRightTarget = /*mecDrive.fright_drive.getCurrentPosition() + */(int) (rightInches * COUNTS_PER_INCH);
-            /*
-            mecDrive.fleft_drive.setTargetPosition(newLeftTarget*y);
+            newLeftTarget = (int) (leftInches * COUNTS_PER_INCH);
+            newRightTarget = (int) (rightInches * COUNTS_PER_INCH);
+            newfLeftTarget = (int) (leftInches*fleft_multiplier*COUNTS_PER_INCH);
+
+            mecDrive.fleft_drive.setTargetPosition(newfLeftTarget*y);
             mecDrive.fright_drive.setTargetPosition(newRightTarget);
             mecDrive.bleft_drive.setTargetPosition(newLeftTarget);
             mecDrive.bright_drive.setTargetPosition(newRightTarget*y);
-        */
-            double increment = speed/10;
-            int ALP = newLeftTarget-(int)(0.5*speed)* (int) (0.182+0.25);
-            int ARP = newRightTarget-(int)(0.5*speed)* (int) (0.182+0.25);
-            mecDrive.fleft_drive.setTargetPosition(ALP*y);
-            mecDrive.fright_drive.setTargetPosition(ARP);
-            mecDrive.bleft_drive.setTargetPosition(ALP);
-            mecDrive.bright_drive.setTargetPosition(ARP*y);
-
 
             telemetry.addData("bright pos", mecDrive.bright_drive.getCurrentPosition());
             telemetry.addData("bleft pos", mecDrive.bleft_drive.getCurrentPosition());
@@ -184,54 +175,15 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
             mecDrive.bleft_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             mecDrive.bright_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            // reset the timeout time and start motion
-
-            double currentPower = 0;
-            runtime.reset();
-            while(currentPower < speed) {
-                mecDrive.fleft_drive.setPower(Math.abs(currentPower) * fleft_multiplier1 * y);
-                mecDrive.fright_drive.setPower(Math.abs(currentPower));
-                mecDrive.bleft_drive.setPower(Math.abs(currentPower));
-                mecDrive.bright_drive.setPower(Math.abs(currentPower) * y);
-                currentPower += increment;
-                telemetry.addData("currentPower", currentPower);
-                telemetry.addData("Desired Power:", speed);
-                telemetry.update();
-                sleep(25);
-            }
-
-            double time = runtime.seconds();
+            setMotorPowerAll(speed, speed, speed, speed);
 
 
 
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will  lok
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (mecDrive.fleft_drive.isBusy() && mecDrive.fright_drive.isBusy()&& mecDrive.bleft_drive.isBusy() && mecDrive.bright_drive.isBusy())) {
+                    (mecDrive.fleft_drive.isBusy() || mecDrive.fright_drive.isBusy()|| mecDrive.bleft_drive.isBusy() || mecDrive.bright_drive.isBusy())) {
             }
-            setMotorPowerAll(speed, speed, speed, speed);
-            boolean did = false;
-            while(currentPower > 0) {
-                mecDrive.fleft_drive.setPower(Math.abs(currentPower) * fleft_multiplier1 * y);
-                mecDrive.fright_drive.setPower(Math.abs(currentPower));
-                mecDrive.bleft_drive.setPower(Math.abs(currentPower));
-                mecDrive.bright_drive.setPower(Math.abs(currentPower) * y);
-                currentPower -= increment;
-                telemetry.addData("currentPower", currentPower);
-                telemetry.addData("Desired Power:", 0);
-                telemetry.update();
-                sleep(25);
-                did = true;
-            }
-            telemetry.addData("did", did);
-            telemetry.update();
 
-            // Stop all motion;
             mecDrive.fleft_drive.setPower(0);
             mecDrive.fright_drive.setPower(0);
             mecDrive.bright_drive.setPower(0);
