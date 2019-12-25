@@ -100,12 +100,12 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
         //setdown
         encoderDrive(1.0,-D4, -D4, 4000, false);
         */
-        telemetry.addData("Visible Target", "None");
-        setMotorPowerAll(0.25, -0.25, -0.25, 0.25;
+
+        //goes right until detects SkyStone and then stops
+        //detects at range of 9 in, try not to make further
+        setMotorPowerAll(0.25, -0.25, -0.25, 0.25);
         vuforiaSys.detect();
         setMotorPowerAll(0,0,0,0);
-        telemetry.addData("Visible Target", "SkyStone");
-        telemetry.update();
         runtime.reset();
 
 
