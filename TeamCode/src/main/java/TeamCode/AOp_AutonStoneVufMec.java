@@ -88,7 +88,6 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
         double D2 = 8.78; // once sky stone found, move to sky stone
         double D3 = 21.78; // move under the bridge to drop stone
         double D4 = 24; // move under the bridge
-        encoderDrive(1.0, 35, 35, 4000, false);
         /*
         encoderDrive(1.0,D1, D1, 4000, false);
         encoderDrive(1.0,D2, D2, 4000, false)
@@ -101,23 +100,23 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
         //setdown
         encoderDrive(1.0,-D4, -D4, 4000, false);
         */
-        /*
         telemetry.addData("Visible Target", "None");
-
+        setMotorPowerAll(0.25, -0.25, -0.25, 0.25;
         vuforiaSys.detect();
+        setMotorPowerAll(0,0,0,0);
         telemetry.addData("Visible Target", "SkyStone");
         telemetry.update();
         runtime.reset();
-        */
+
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetry.addData("imu", gyroscope.getAngle());
-            telemetry.addData("bright pos", mecDrive.bright_drive.getCurrentPosition());
-            telemetry.addData("bleft pos", mecDrive.bleft_drive.getCurrentPosition());
-            telemetry.addData("fright pos", mecDrive.fright_drive.getCurrentPosition());
-            telemetry.addData("fleft pos", mecDrive.fleft_drive.getCurrentPosition());
-            telemetry.update();
+            //telemetry.addData("imu", gyroscope.getAngle());
+            //telemetry.addData("bright pos", mecDrive.bright_drive.getCurrentPosition());
+            //telemetry.addData("bleft pos", mecDrive.bleft_drive.getCurrentPosition());
+            //telemetry.addData("fright pos", mecDrive.fright_drive.getCurrentPosition());
+            //telemetry.addData("fleft pos", mecDrive.fleft_drive.getCurrentPosition());
+            //telemetry.update();
         }
     }
     public void encoderDrive(double speed,
@@ -175,8 +174,15 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
             mecDrive.bleft_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             mecDrive.bright_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            setMotorPowerAll(speed, speed, speed, speed);
 
+
+            double currentPower = 0;
+
+                while(currentPower < speed){
+                setMotorPowerAll(currentPower, currentPower, currentPower, currentPower);
+                currentPower += speed/10;
+                sleep(25);
+            }
 
 
             while (opModeIsActive() &&

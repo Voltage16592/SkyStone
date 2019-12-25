@@ -35,7 +35,7 @@ public class Subsys_Vuforia {
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parametersV);
-
+        CameraDevice.getInstance().setFlashTorchMode(true);//turn on flashlight
         // Load the data sets for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
 
@@ -45,10 +45,9 @@ public class Subsys_Vuforia {
 
     public void detect(){
         VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
-
+        targetsSkyStone.activate();
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
-        CameraDevice.getInstance().setFlashTorchMode(true);//turn on flashlight
         while (!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
 
         }
