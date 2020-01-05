@@ -29,67 +29,23 @@
 
 package TeamCode;
 
-import android.hardware.Camera;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-import com.vuforia.CameraDevice;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
 
 @Autonomous(name=" AOp_AutonStoneVufMec", group="Linear Opmode")
 public class AOp_AutonStoneVufMec extends LinearOpMode {
 
-    private static final String VUFORIA_KEY =
-            "Ado05xz/////AAABmY8uetMq2krthNRU8hk1XbAPBHbJ/EVJizmHI/8Kz+HV4an+0zONWUZOd9XOiJIebM2WA7z/Wzffa9W87IrMnmb4pKEkY5dYbzjEdsDy28aKcZSkAu7jpO610LnMv+tWDKK3Chj+apf7OinQiaMnm9xSdjIOTxe6kegt5kHTY6inImWrZuHXe6trOfv48elrDyhrTDNELqZwjjG1LFZkGzgyKCQ9wvWcO0JXec+R5iQg+RMc92eqhCMv/6558QRae364puvHtp0OfszOivgelgFk901BvjQzTFzYnh80+tFWbiNNGfc6jzyz09xcWBR9B9xOsIPHcNPgsF9akWHjrEaDCtj/XdsrlqOf93xq31fl ";
-    private ElapsedTime runtime = new ElapsedTime();
+   private ElapsedTime runtime = new ElapsedTime();
     BNO055IMU               imu;
     double globalAngle = 0;
     Orientation             lastAngles = new Orientation();
-    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false  ;
-    private VuforiaLocalizer vuforia = null;
-    public static Camera cam = null;
     private DcMotor gNeck =  null;
     private Servo giraffeMouth = null;
     //DcMotor fleft_drive;//front left motor
@@ -108,59 +64,21 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
     static final double Adjust = 1/9.52;
     static final double TURN_SPEED = 0.5;
     private SubSys_MecDrive mecDrive = new SubSys_MecDrive();
+    private Subsys_Vuforia vuforiaSys = new Subsys_Vuforia();
+    private Subsys_gyroscope gyroscope = new Subsys_gyroscope();
 
 
     @Override
     public void runOpMode() {
 
-
-        /*
-        mecDrive.fleft_drive = hardwareMap.get(DcMotor.class, "fleft_drive");
-        mecDrive.fleft_drive.setDirection(DcMotor.Direction.REVERSE);
-        mecDrive.fright_drive = hardwareMap.get(DcMotor.class, "fright_drive");
-        mecDrive.fright_drive.setDirection(DcMotor.Direction.FORWARD);
-        mecDrive.bleft_drive = hardwareMap.get(DcMotor.class, "bleft_drive");
-        mecDrive.bleft_drive.setDirection(DcMotor.Direction.REVERSE);
-        mecDrive.bright_drive = hardwareMap.get(DcMotor.class, "bright_drive");
-        mecDrive.bright_drive.setDirection(DcMotor.Direction.FORWARD);
-        */
-
-            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-            parameters.mode                = BNO055IMU.SensorMode.IMU;
-            parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-            parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-            parameters.loggingEnabled      = false;
-
-            imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-            imu.initialize(parameters);
-
-            int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-            VuforiaLocalizer.Parameters parametersV = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-            parametersV.vuforiaLicenseKey = VUFORIA_KEY;
-            parametersV.cameraDirection   = CAMERA_CHOICE;
-
-
-            //  Instantiate the Vuforia engine
-            vuforia = ClassFactory.getInstance().createVuforia(parametersV);
-
-            // Load the data sets for the trackable objects. These particular data
-            // sets are stored in the 'assets' part of our application.
-            VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
-
-            VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
-            stoneTarget.setName("Stone Target");
-            telemetry.addData("Status:", "Initialized");
-            while (!isStopRequested() && !imu.isGyroCalibrated()) {
-                        sleep(50);
-                        idle();
-            }
-            telemetry.addData("Mode", "waiting for start");
-            telemetry.addData("imu calib status", imu.getCalibrationStatus().toString());
-
             telemetry.update();
         mecDrive.init(hardwareMap);
+        telemetry.addData("MecDrive:", "Initialized");
+        vuforiaSys.runOpMode(hardwareMap);
+        telemetry.addData("Vuforia:", "Initialized");
+        gyroscope.init(hardwareMap);
+        telemetry.addData("Gyroscope:","Calibrated");
+        telemetry.update();
         waitForStart();
 
 
@@ -170,56 +88,50 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
         double D2 = 8.78; // once sky stone found, move to sky stone
         double D3 = 21.78; // move under the bridge to drop stone
         double D4 = 24; // move under the bridge
-        encoderDrive(0.8,D1, D1, 4000, true);
         /*
-        while (!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
-            setMotorPowerAll(-0.5 * fleft_multiplier,0.5, 0.5, -0.5);
-            telemetry.addData("Visible Target", "None");
-            telemetry.update();
-        }
-        */
-        //telemetry.addData("Visible Target", "SkyStone");
-        //telemetry.update();
-        //encoderDrive(1.0,D2, D2, 4000, false);
+        encoderDrive(1.0,D1, D1, 4000, false);
+        encoderDrive(1.0,D2, D2, 4000, false)
         //pickup
+        encoderDrive(1.0, -12, -12, 4000, false);
+        rotate(74, 1.0);
         //encoderDrive(1.0,-D3, -D3, 4000, false);
-        //rotate(-74, 1.0);
-        //encoderDrive(1.0,D4, D4, 4000, false);
-        //setdown
-        //encoderDrive(1.0,-D4, -D4, 4000, false);
-        while (!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
-            telemetry.addData("Visible Target", "None");
-            telemetry.update();
-        }
 
-        telemetry.addData("Visible Target", "SkyStone");
-        telemetry.update();
+        encoderDrive(1.0,D4, D4, 4000, false);
+        //setdown
+        encoderDrive(1.0,-D4, -D4, 4000, false);
+        */
+
+        //goes right until detects SkyStone and then stops
+        //detects at range of 9 in, try not to make further
+        setMotorPowerAll(0.25, -0.25, -0.25, 0.25);
+        vuforiaSys.detect();
+        setMotorPowerAll(0,0,0,0);
         runtime.reset();
-        CameraDevice.getInstance().setFlashTorchMode(true);//turn on flashlight
+
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetry.addData("imu", getAngle());
-            telemetry.addData("bright pos", mecDrive.bright_drive.getCurrentPosition());
-            telemetry.addData("bleft pos", mecDrive.bleft_drive.getCurrentPosition());
-            telemetry.addData("fright pos", mecDrive.fright_drive.getCurrentPosition());
-            telemetry.addData("fleft pos", mecDrive.fleft_drive.getCurrentPosition());
-            telemetry.update();
+            //telemetry.addData("imu", gyroscope.getAngle());
+            //telemetry.addData("bright pos", mecDrive.bright_drive.getCurrentPosition());
+            //telemetry.addData("bleft pos", mecDrive.bleft_drive.getCurrentPosition());
+            //telemetry.addData("fright pos", mecDrive.fright_drive.getCurrentPosition());
+            //telemetry.addData("fleft pos", mecDrive.fleft_drive.getCurrentPosition());
+            //telemetry.update();
         }
     }
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeoutS, boolean Sideways) {
+
         int newLeftTarget;
         int newRightTarget;
+        int newfLeftTarget;
         int y = 1;
         double adjust = 0.15;
         leftInches *= adjust;
         rightInches *= adjust;
-        double fleft_multiplier1 = fleft_multiplier;
         if (Sideways == true){
            y = -1;
-           fleft_multiplier1 = 1;
         }
         double pow = Math.abs(speed);
         // Ensure that the opmode is still active
@@ -241,9 +153,11 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
 
-            newLeftTarget = /*mecDrive.fleft_drive.getCurrentPosition() + */(int) (leftInches * COUNTS_PER_INCH);
-            newRightTarget = /*mecDrive.fright_drive.getCurrentPosition() + */(int) (rightInches * COUNTS_PER_INCH);
-            mecDrive.fleft_drive.setTargetPosition(newLeftTarget*y);
+            newLeftTarget = (int) (leftInches * COUNTS_PER_INCH);
+            newRightTarget = (int) (rightInches * COUNTS_PER_INCH);
+            newfLeftTarget = (int) (leftInches*fleft_multiplier*COUNTS_PER_INCH);
+
+            mecDrive.fleft_drive.setTargetPosition(newfLeftTarget*y);
             mecDrive.fright_drive.setTargetPosition(newRightTarget);
             mecDrive.bleft_drive.setTargetPosition(newLeftTarget);
             mecDrive.bright_drive.setTargetPosition(newRightTarget*y);
@@ -260,33 +174,22 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
             mecDrive.bleft_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             mecDrive.bright_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            // reset the timeout time and start motion.
-            runtime.reset();
-            mecDrive.fleft_drive.setPower(Math.abs(speed)*fleft_multiplier1*y);
-            mecDrive.fright_drive.setPower(Math.abs(speed));
-            mecDrive.bleft_drive.setPower(Math.abs(speed));
-            mecDrive.bright_drive.setPower(Math.abs(speed)*y);
-            //setMotorPowerAll(pow*y,pow,pow,pow*y);
 
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will  lok
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (mecDrive.fleft_drive.isBusy() && mecDrive.fright_drive.isBusy()&& mecDrive.bleft_drive.isBusy() && mecDrive.bright_drive.isBusy())) {
 
-                // Display it for the driver.
-                //telemetry.addData("Path1", "Running to ", newLeftTarget, newRightTarget);
-                //telemetry.addData("Path2", "Running at ",
-                        //fleft_drive.getCurrentPosition();
-                        //fright_drive.getCurrentPosition();
-                //telemetry.update();
+            double currentPower = 0;
+
+                while(currentPower < speed){
+                setMotorPowerAll(currentPower, currentPower, currentPower, currentPower);
+                currentPower += speed/10;
+                sleep(25);
             }
 
-            // Stop all motion;
+
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (mecDrive.fleft_drive.isBusy() || mecDrive.fright_drive.isBusy()|| mecDrive.bleft_drive.isBusy() || mecDrive.bright_drive.isBusy())) {
+            }
+
             mecDrive.fleft_drive.setPower(0);
             mecDrive.fright_drive.setPower(0);
             mecDrive.bright_drive.setPower(0);
@@ -312,89 +215,19 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
     }
 
      private void setMotorPowerAll(double fl, double fr, double bl, double br) {
-         mecDrive.fleft_drive.setPower(ramp_Motor_Power(mecDrive.fleft_drive.getPower(), fl)*fleft_multiplier);
-         mecDrive.fright_drive.setPower(ramp_Motor_Power(mecDrive.fright_drive.getPower(), fr));
-         mecDrive.bleft_drive.setPower(ramp_Motor_Power(mecDrive.bleft_drive.getPower(), bl));
-         mecDrive.bright_drive.setPower(ramp_Motor_Power(mecDrive.bright_drive.getPower(), br));
+         mecDrive.fleft_drive.setPower(fl*fleft_multiplier);
+         mecDrive.fright_drive.setPower(fr);
+         mecDrive.bleft_drive.setPower(bl);
+         mecDrive.bright_drive.setPower(br);
     }
-
+    /*
     private void resetAngle()
     {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     }
+    */
 
-    private void rotate(int degrees, double power)
-    {
-        double  leftPower, rightPower;
 
-        // restart imu movement tracking.
-        resetAngle();
-
-        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
-        // clockwise (right).
-
-        if (degrees < 0)
-        {   // turn right.
-            leftPower = power;
-            rightPower = -power;
-        }
-        else if (degrees > 0)
-        {   // turn left.
-            leftPower = -power;
-            rightPower = power;
-        }
-        else return;
-
-        // set power to rotate.
-        mecDrive.fleft_drive.setPower(leftPower*fleft_multiplier);
-        mecDrive.fleft_drive.setPower(leftPower);
-        mecDrive.bright_drive.setPower(rightPower);
-        mecDrive.fright_drive.setPower(rightPower);
-
-        // rotate until turn is completed.
-        if (degrees < 0)
-        {
-            // On right turn we have to get off zero first.
-            while (opModeIsActive() && getAngle() == 0) {}
-
-            while (opModeIsActive() && getAngle() > degrees) {}
-        }
-        else    // left turn.
-            while (opModeIsActive() && getAngle() < degrees) {}
-
-        // turn the motors off.
-        mecDrive.fright_drive.setPower(0);
-        mecDrive.bright_drive.setPower(0);
-        mecDrive.fleft_drive.setPower(0);
-        mecDrive.bleft_drive.setPower(0);
-
-        // wait for rotation to stop.
-        //sleep(1000);
-
-        // reset angle tracking on new heading.
-        resetAngle();
-    }
-
-    private double getAngle()
-    {
-        // We experimentally determined the Z axis is the axis we want to use for heading angle.
-        // We have to process the angle because the imu works in euler angles so the Z axis is
-        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
-        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
-
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
-
-        if (deltaAngle < -180)
-            deltaAngle += 360;
-        else if (deltaAngle > 180)
-            deltaAngle -= 360;
-        globalAngle +=deltaAngle;
-
-        lastAngles = angles;
-        return globalAngle;
-    }
     public void encoderArm(double speed, double degrees, double timeoutS, double servo) {
         int newUpTarget;
         int newServoTarget;
@@ -439,6 +272,58 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
         }
         return false;
 
+    }
+
+    public void rotate(int degrees, double power)
+    {
+        double  leftPower, rightPower;
+
+        // restart imu movement tracking.
+        gyroscope.resetAngle();
+
+        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
+        // clockwise (right).
+
+        if (degrees < 0)
+        {   // turn right.
+            leftPower = power;
+            rightPower = -power;
+        }
+        else if (degrees > 0)
+        {   // turn left.
+            leftPower = -power;
+            rightPower = power;
+        }
+        else return;
+
+        // set power to rotate.
+        mecDrive.fleft_drive.setPower(leftPower*fleft_multiplier);
+        mecDrive.fleft_drive.setPower(leftPower);
+        mecDrive.bright_drive.setPower(rightPower);
+        mecDrive.fright_drive.setPower(rightPower);
+
+        // rotate until turn is completed.
+        if (degrees < 0)
+        {
+            // On right turn we have to get off zero first.
+            while (opModeIsActive() && gyroscope.getAngle() == 0) {}
+
+            while (opModeIsActive() && gyroscope.getAngle() > degrees) {}
+        }
+        else    // left turn.
+            while (opModeIsActive() && gyroscope.getAngle() < degrees) {}
+
+        // turn the motors off.
+        mecDrive.fright_drive.setPower(0);
+        mecDrive.bright_drive.setPower(0);
+        mecDrive.fleft_drive.setPower(0);
+        mecDrive.bleft_drive.setPower(0);
+
+        // wait for rotation to stop.
+        //sleep(1000);
+
+        // reset angle tracking on new heading.
+        gyroscope.resetAngle();
     }
 
     private boolean isDetected(DigitalChannel limitSwitch) {
