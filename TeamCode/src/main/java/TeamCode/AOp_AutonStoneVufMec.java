@@ -54,14 +54,14 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
     private DigitalChannel reverseLimitSwitch;
     //DcMotor bleft_drive;//back left motor
     //DcMotor bright_drive;//back left motor
-    double fleft_multiplier = 0.91;
+    double fleft_multiplier = 0.89;
     static final double COUNTS_PER_MOTOR_REV = 2240;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_INCHES = 3.937;     // For figuring circumference
+    static final double WHEEL_DIAMETER_INCHES = 3.937;     // For figuring ycircumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.14159267);
     static final double DRIVE_SPEED = 0.6;
-    static final double Adjust = 1/9.52;
+    static final double Adjust = 0.43;
     static final double TURN_SPEED = 0.5;
     private SubSys_MecDrive mecDrive = new SubSys_MecDrive();
     private Subsys_Vuforia vuforiaSys = new Subsys_Vuforia();
@@ -88,28 +88,48 @@ public class AOp_AutonStoneVufMec extends LinearOpMode {
         double D2 = 8.78; // once sky stone found, move to sky stone
         double D3 = 21.78; // move under the bridge to drop stone
         double D4 = 24; // move under the bridge
-        /*
-        encoderDrive(1.0,D1, D1, 4000, false);
-        encoderDrive(1.0,D2, D2, 4000, false)
-        //pickup
-        encoderDrive(1.0, -12, -12, 4000, false);
-        rotate(74, 1.0);
-        //encoderDrive(1.0,-D3, -D3, 4000, false);
+        encoderDrive(1.0, 47, 47, 4000, false);
 
-        encoderDrive(1.0,D4, D4, 4000, false);
-        //setdown
-        encoderDrive(1.0,-D4, -D4, 4000, false);
-        */
-
-        //goes right until detects SkyStone and then stops
+        double time = 0;
+        //        //goes right until detects SkyStone and then stops
         //detects at range of 9 in, try not to make further
+        /*
+        runtime.reset();
+        encoderDrive(1.0,25.5,25.5, 4000, false);
         setMotorPowerAll(0.25, -0.25, -0.25, 0.25);
         vuforiaSys.detect();
+        time = getRuntime();
         setMotorPowerAll(0,0,0,0);
+
+        encoderDrive(1.0, 5.0, 5.0, 4000, false);
+        encoderArm(1.0, 360, 2000,  0);
+        encoderDrive(1.0, -10, -10, 4000, false);
+        rotate(-74, 1.0);
         runtime.reset();
+        setMotorPowerAll(1.0,1.0,1.0,1.0);
+        while(getRuntime() < time){}
+        encoderDrive(1.0, 31, 31, 5000, false);
+        encoderDrive(1.0, -47, -47, 4000, false);
+        runtime.reset();
+        setMotorPowerAll(-1.0,-1.0,-1.0,-1.0);
+        while(getRuntime() < time){
 
+        }
+        setMotorPowerAll(0,0,0,0);
+        rotate(74, 1.0);
+        encoderDrive(1.0, 10, 10, 3000, false);
+        encoderArm(1.0, 360, 2000,  0);
+        encoderDrive(1.0, -10, -10, 4000, false);
+        encoderArm(1.0, 360, 4000, 0);
+        rotate(-74, 1.0);
 
-        // run until the end of the match (driver presses STOP)
+        setMotorPowerAll(-1.0,-1.0,-1.0,-1.0);
+        */
+        while(getRuntime() < time){
+
+        }
+
+            // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             //telemetry.addData("imu", gyroscope.getAngle());
             //telemetry.addData("bright pos", mecDrive.bright_drive.getCurrentPosition());

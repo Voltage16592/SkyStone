@@ -33,6 +33,7 @@ public class TOpMode_ElephBot
         mecDrive.init(hardwareMap);
         elephant.init(hardwareMap);
 
+        elephant.eTail.setPosition(0.5);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -102,4 +103,6 @@ public class TOpMode_ElephBot
             current_Power = desired_Power;
         return current_Power;
     }//to ramp power instead of going 0 to 100
+
+
 }

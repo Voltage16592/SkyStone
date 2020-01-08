@@ -16,7 +16,7 @@ public class SubSys_MecDrive {
     DcMotor bleft_drive;//back left motorh
 
     DcMotor bright_drive;//back left motor
-    double fleft_multiplier = 0.91;
+    double fleft_multiplier = 0.89;
     HardwareMap hardwareMap;
     //telemetry.addData("fuck you");
     //for encoder driving:
@@ -24,7 +24,7 @@ public class SubSys_MecDrive {
     static final double WHEEL_DIAMETER_INCHES = 3.5;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV) /
             (WHEEL_DIAMETER_INCHES * 3.14159265);
-
+    static final double Adjust = 0.43;
     SubSys_MecDrive(){}
 
     public void init(HardwareMap hM){

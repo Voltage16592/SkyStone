@@ -11,7 +11,8 @@ public class SubSys_Elephant {
     DcMotor eTrunk;
     DigitalChannel forwardLimitSwitch;
     DigitalChannel reverseLimitSwitch;
-    Servo eNose;
+    Servo eNoseL;
+    Servo eNoseR;
     Servo eTail;
     private double eTrunkScaler = 0.4;
     HardwareMap hardwareMap;
@@ -28,8 +29,11 @@ public class SubSys_Elephant {
         eTrunk = hardwareMap.get(DcMotor.class, "eTrunk");
         eTrunk.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         eTrunk.setDirection(DcMotorSimple.Direction.REVERSE);
-        eNose = hardwareMap.get(Servo.class, "eNose");
+        eNoseL = hardwareMap.get(Servo.class, "eNoseL");
+        eNoseR = hardwareMap.get(Servo.class, "eNoseR");
         eTail = hardwareMap.get(Servo.class, "eTail");
+        eNoseL.setPosition(0);
+        eNoseR.setPosition(0);
 
 
     }
@@ -48,11 +52,14 @@ public class SubSys_Elephant {
     }
 
     public void moveNose(Gamepad gamepad){
-        double servoPos = eNose.getPosition();
+        double servoPosL = eNoseL.getPosition();
+        double servoPosR = eNoseR.getPosition();
         if(gamepad.left_bumper == true){ //to open mouth
-            eNose.setPosition(servoPos+0.05);
+            eNoseL.setPosition(servoPosL+0.05);
+            eNoseR.setPosition(servoPosR-0.05);
         } else if(gamepad.right_bumper == true){ //to close mouth
-            eNose.setPosition(servoPos-0.05);
+            eNoseL.setPosition(servoPosL-0.05);
+            eNoseR.setPosition(servoPosR+0.05);
         }
     }
 
