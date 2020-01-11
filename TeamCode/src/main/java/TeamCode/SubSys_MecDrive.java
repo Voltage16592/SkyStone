@@ -13,13 +13,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class SubSys_MecDrive {
     DcMotor fleft_drive;//front left motor
     DcMotor fright_drive;//front right motor
-    DcMotor bleft_drive;//back left motorh
-
+    DcMotor bleft_drive;//back left motor
     DcMotor bright_drive;//back left motor
-    double fleft_multiplier = 0.89;
+    private double precisionSpeed = 0.251 ;
+    double fleft_multiplier = 0.95;
     HardwareMap hardwareMap;
-    //telemetry.addData("fuck you");
-    //for encoder driving:
     static final double COUNTS_PER_MOTOR_REV = 2240;    // eg: TETRIX Motor Encoder
     static final double WHEEL_DIAMETER_INCHES = 3.5;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV) /
@@ -37,6 +35,26 @@ public class SubSys_MecDrive {
         bleft_drive.setDirection(DcMotor.Direction.REVERSE);
         bright_drive = hardwareMap.get(DcMotor.class, "bright_drive");
         bright_drive.setDirection(DcMotor.Direction.FORWARD);
+
+    }
+
+    public void joystickDrive(double fwd_bkwd, double rt_lt, double clockwise_speed, double counterClockwise_speed){
+        move(fwd_bkwd, rt_lt, clockwise_speed, counterClockwise_speed);
+    }
+
+    public void precisionDrive(boolean up, boolean down, boolean right, boolean left, boolean clockwise, boolean counterClockwise){
+        if(up)
+            move(precisionSpeed, 0, 0, 0);
+        else if(down)
+            move(-precisionSpeed, 0, 0, 0);
+        else if(right)
+            move(0, -precisionSpeed, 0, 0);
+        else if(left)
+            move(0, precisionSpeed, 0, 0);
+        else if(clockwise)
+            move(0, 0, precisionSpeed, 0);
+        else if(counterClockwise)
+            move(0, 0, 0, precisionSpeed);
 
     }
 

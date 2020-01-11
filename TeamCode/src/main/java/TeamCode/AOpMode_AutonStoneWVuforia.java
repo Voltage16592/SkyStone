@@ -141,7 +141,6 @@ public class AOpMode_AutonStoneWVuforia extends LinearOpMode {
         }
         telemetry.addData("Visible Target", "SkyStone");
         telemetry.update();
-        sleep(10000);
 
 
         encoderDrive(DRIVE_SPEED, 4, 4, 4);

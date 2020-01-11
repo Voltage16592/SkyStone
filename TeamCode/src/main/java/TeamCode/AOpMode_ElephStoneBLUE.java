@@ -167,7 +167,7 @@ public class AOpMode_ElephStoneBLUE extends LinearOpMode {
     }
     private boolean limit(double desired_Speed){
         double output;
-        if ((desired_Speed>0 && isDetected(elephant.forwardLimitSwitch)) || (desired_Speed<0 && isDetected(elephant.reverseLimitSwitch))) {
+        if ((desired_Speed>0 && elephant.eTrunk.getCurrentPosition()<=elephant.maxTrunkHeight) || (desired_Speed<0 && elephant.eTrunk.getCurrentPosition()>=0)) {
             output = 0;
             elephant.eTrunk.setPower(output);
             telemetry.addData("limit", "*******stopping because of limit");

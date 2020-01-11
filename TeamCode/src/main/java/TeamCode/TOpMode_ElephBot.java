@@ -60,10 +60,11 @@ public class TOpMode_ElephBot
     @Override
     public void loop() {
 
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-        mecDrive.move(-gamepad1.right_stick_y,   -gamepad1.right_stick_x, gamepad1.right_trigger, gamepad1.left_trigger);
+        if(!(gamepad1.dpad_up || gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_right || gamepad1.right_bumper || gamepad1.left_bumper))
+            mecDrive.joystickDrive(-gamepad1.right_stick_y,   -gamepad1.right_stick_x, gamepad1.right_trigger, gamepad1.left_trigger);
+        mecDrive.precisionDrive(gamepad1.dpad_up, gamepad1.dpad_down,   gamepad1.dpad_right, gamepad1.dpad_left, gamepad1.right_bumper, gamepad1.left_bumper);
+
 
         elephant.moveTrunk(gamepad2);
         elephant.moveNose(gamepad2);
@@ -83,10 +84,14 @@ public class TOpMode_ElephBot
 
     private void report() {
 
+        // Show the elapsed game time and wheel power.
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("trunk encoder pos", elephant.eTrunk.getCurrentPosition());
         telemetry.addData("right_stick_y", gamepad1.right_stick_y);
         telemetry.addData("right_stick_x", gamepad1.right_stick_x);
         telemetry.addData("left_trigger", gamepad1.left_trigger);
-        telemetry.addData("right_trigger", gamepad1.right_trigger);
+
+        telemetry.addData("up", gamepad1.dpad_up);
 
 
         telemetry.update();
