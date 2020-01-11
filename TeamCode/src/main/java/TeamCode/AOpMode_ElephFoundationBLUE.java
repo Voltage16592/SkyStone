@@ -37,23 +37,22 @@ public class AOpMode_ElephFoundationBLUE extends LinearOpMode {
 
         elephant.eTail.setPosition(0.5);//Keep tail up, out of the way
         double inches;
-        inches = 30;
+        inches = 5;
         encoderDrive(1, inches, -inches, -inches, inches, 4);//Move Right
-        inches = 45;
+        inches = 11;
         encoderDrive(1, -inches, -inches, -inches, -inches, 4);//Move Back
         elephant.eTail.setPosition(0.95);//put Foundation grabber down
         sleep(1000);
-        inches = 50;
+        inches = 13;
         encoderDrive(1, inches, inches, inches, inches, 4);//Move Forward
         elephant.eTail.setPosition(0.5);//Release Tail
-        inches = 30;
-        encoderDrive(1, -inches, inches, inches, -inches, 4);//Move Left to get out from foundation
-        inches = 2;
-        encoderDrive(1, -inches, -inches, -inches, -inches, 2);//Move Back
-        inches = 35;
-        encoderDrive(1, -inches, inches, inches, -inches, 4);//Move Left to park under bridge
         inches = 5;
-        encoderDrive(1, inches, inches, inches, inches, 2);//Move Forward
+        encoderDrive(1, -inches, inches, inches, -inches, 4);//Move Left to get out from foundation
+        inches = 1;
+        encoderDrive(1, -inches, -inches, -inches, -inches, 2);//Move Back
+        inches = 10;
+        encoderDrive(1, -inches, inches, inches, -inches, 4);//Move Left to park under bridge
+
 
     }
 
